@@ -1,0 +1,3 @@
+[pages]
+project_name = "snooker-rankings"
+build_output_directory = "out"
