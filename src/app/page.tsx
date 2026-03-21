@@ -1,31 +1,12 @@
 'use client'
 
 import { useState } from 'react'
-
-// 模拟数据 - 后续会从 API 获取
-const initialPlayers = [
-  { rank: 1, name: 'Judd Trump', points: 1869000, country: 'England', trend: 'up' },
-  { rank: 2, name: 'Kyren Wilson', points: 1421000, country: 'England', trend: 'up' },
-  { rank: 3, name: 'Mark Allen', points: 1259000, country: 'Northern Ireland', trend: 'down' },
-  { rank: 4, name: 'Ronnie O\'Sullivan', points: 1197000, country: 'England', trend: 'same' },
-  { rank: 5, name: 'Luca Brecel', points: 1086000, country: 'Belgium', trend: 'down' },
-  { rank: 6, name: 'Mark Selby', points: 987000, country: 'England', trend: 'up' },
-  { rank: 7, name: 'John Higgins', points: 912000, country: 'Scotland', trend: 'same' },
-  { rank: 8, name: 'Neil Robertson', points: 876000, country: 'Australia', trend: 'down' },
-  { rank: 9, name: 'Ding Junhui', points: 834000, country: 'China', trend: 'up' },
-  { rank: 10, name: 'Shaun Murphy', points: 789000, country: 'England', trend: 'up' },
-  { rank: 11, name: 'Barry Hawkins', points: 745000, country: 'England', trend: 'same' },
-  { rank: 12, name: 'Zhang Anda', points: 712000, country: 'China', trend: 'up' },
-  { rank: 13, name: 'Tom Ford', points: 678000, country: 'England', trend: 'down' },
-  { rank: 14, name: 'Stuart Bingham', points: 645000, country: 'England', trend: 'same' },
-  { rank: 15, name: 'Gary Wilson', points: 612000, country: 'England', trend: 'down' },
-  { rank: 16, name: 'Joe O\'Connor', points: 589000, country: 'England', trend: 'up' },
-]
+import { players, metadata } from '../data/rankings'
 
 export default function Home() {
   const [searchTerm, setSearchTerm] = useState('')
   
-  const filteredPlayers = initialPlayers.filter(player =>
+  const filteredPlayers = players.filter(player =>
     player.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
     player.country.toLowerCase().includes(searchTerm.toLowerCase())
   )
@@ -42,6 +23,16 @@ export default function Home() {
     return 'text-gray-400'
   }
 
+  // 格式化日期显示
+  const formatDate = (isoString: string) => {
+    const date = new Date(isoString)
+    return date.toLocaleDateString('en-US', { 
+      year: 'numeric', 
+      month: 'long', 
+      day: 'numeric' 
+    })
+  }
+
   return (
     <main className="min-h-screen bg-gradient-to-b from-snooker-green to-gray-900">
       {/* Header */}
@@ -51,7 +42,7 @@ export default function Home() {
             🎱 World Snooker Rankings 2026
           </h1>
           <p className="text-gray-300 text-center text-lg">
-            Live snooker world rankings - Updated March 2026
+            Live snooker world rankings - Updated {formatDate(metadata.lastUpdated)}
           </p>
         </div>
       </header>
