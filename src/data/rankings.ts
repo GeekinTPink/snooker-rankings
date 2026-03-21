@@ -20,7 +20,7 @@ export interface RankingsData {
 }
 
 // 从本地 JSON 文件加载数据（由爬虫脚本每日更新）
-export const players: Player[] = rankingsData.players
+export const players: Player[] = rankingsData.players as Player[]
 
 // 数据元信息
 export const metadata = {

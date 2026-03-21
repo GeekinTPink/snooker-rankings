@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { players, metadata } from '../data/rankings'
+import LoginButton from '@/components/LoginButton'
 
 export default function Home() {
   const [searchTerm, setSearchTerm] = useState('')
@@ -38,9 +39,12 @@ export default function Home() {
       {/* Header */}
       <header className="bg-snooker-green border-b border-snooker-gold/30">
         <div className="container mx-auto px-4 py-8">
-          <h1 className="text-4xl md:text-5xl font-bold text-white text-center mb-2">
-            🎱 World Snooker Rankings 2026
-          </h1>
+          <div className="flex justify-between items-center mb-4">
+            <h1 className="text-4xl md:text-5xl font-bold text-white">
+              🎱 World Snooker Rankings 2026
+            </h1>
+            <LoginButton />
+          </div>
           <p className="text-gray-300 text-center text-lg">
             Live snooker world rankings - Updated {formatDate(metadata.lastUpdated)}
           </p>
@@ -108,7 +112,7 @@ export default function Home() {
       {/* Footer */}
       <footer className="bg-snooker-green/50 border-t border-white/10 py-6">
         <div className="container mx-auto px-4 text-center text-gray-400">
-          <p>Data source: World Snooker Tour | Updated: March 18, 2026</p>
+          <p>Data source: {metadata.source} | Updated: {formatDate(metadata.lastUpdated)}</p>
           <p className="mt-2 text-sm">
             Built with Next.js + Tailwind CSS | Deployed on Cloudflare Pages
           </p>
