@@ -7,7 +7,6 @@ const SESSION_MAX_AGE = 60 * 60 * 24 * 7 // 7 天
 
 /** 无需登录的公开页面路径 */
 const PUBLIC_PATHS = [
-  "/",
   "/about",
   "/help",
   "/privacy",
