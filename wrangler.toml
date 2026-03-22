@@ -1,4 +1,10 @@
-[pages]
-project_name = "snooker-rankings"
-build_output_directory = "out"
-account_id = "ee944530b70ebfe1e3824c41ee82afc2"
+# Cloudflare Pages Configuration
+name = "snooker-rankings"
+pages_build_output_dir = ".next"
+compatibility_date = "2026-03-22"
+
+# D1 Database Binding (需要在 Dashboard 手动绑定)
+# [[d1_databases]]
+# binding = "DB"
+# database_name = "snooker-users-db"
+# database_id = "1fc92714-3b16-4d5e-a90c-6bfcb8d68ea7"
