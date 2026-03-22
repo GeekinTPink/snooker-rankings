@@ -52,9 +52,9 @@ async function initDB(db: any) {
 async function upsertUser(db: any, user: {
   id: string
   email: string
-  name?: string | null
-  image?: string | null
-  emailVerified?: Date | null
+  name: string | null
+  image: string | null
+  emailVerified: Date | null
 }) {
   await db.prepare(`
     INSERT INTO users (id, email, name, image, email_verified, updated_at)
@@ -159,22 +159,24 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       if (account?.provider === "google" && user.email) {
         try {
           // 获取 D1 数据库绑定（在 Workers 环境中可用）
-          const db = (globalThis as any).__D1_BLOB__
+          const db = (globalThis as any).DB
           
           if (db) {
             // 初始化表
             await initDB(db)
             
-            // 存储用户信息
-            await upsertUser(db, {
-              id: user.id,
-              email: user.email,
-              name: user.name,
-              image: user.image,
-              emailVerified: user.emailVerified
-            })
-            
-            console.log(`User stored in D1: ${user.email}`)
+            // 存储用户信息（确保 id 存在）
+            if (user.id) {
+              await upsertUser(db, {
+                id: user.id,
+                email: user.email,
+                name: user.name ?? null,
+                image: user.image ?? null,
+                emailVerified: user.emailVerified ?? null
+              })
+              
+              console.log(`User stored in D1: ${user.email}`)
+            }
           }
         } catch (error) {
           console.error('Error storing user in D1:', error)
