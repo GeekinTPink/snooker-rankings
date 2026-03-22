@@ -9,6 +9,7 @@ import LoginButton from '@/components/LoginButton'
 export default function Home() {
   const { data: session, status } = useSession()
   const router = useRouter()
+  const [searchTerm, setSearchTerm] = useState('')
   
   // 检查登录状态，未登录重定向到登录页
   useEffect(() => {
@@ -31,8 +32,6 @@ export default function Home() {
     return null
   }
 
-  const [searchTerm, setSearchTerm] = useState('')
-  
   const filteredPlayers = players.filter(player =>
     player.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
     player.country.toLowerCase().includes(searchTerm.toLowerCase())
