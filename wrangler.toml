@@ -1,11 +1,30 @@
-# Cloudflare Pages Configuration
+# Cloudflare Worker + static assets（OpenNext）
+# https://opennext.js.org/cloudflare/get-started
 name = "snooker-rankings"
-pages_build_output_dir = ".open-next/assets"
+main = ".open-next/worker.js"
 compatibility_date = "2026-03-22"
-compatibility_flags = ["nodejs_compat"]
+compatibility_flags = ["nodejs_compat", "global_fetch_strictly_public"]
 
-# D1 Database Binding (需要在 Dashboard 手动绑定)
+[assets]
+directory = ".open-next/assets"
+binding = "ASSETS"
+
+# 与 name 一致，用于 ISR/队列等自引用 fetch
+[[services]]
+binding = "WORKER_SELF_REFERENCE"
+service = "snooker-rankings"
+
+# D1（需在 Dashboard 绑定后取消注释）
 # [[d1_databases]]
 # binding = "DB"
 # database_name = "snooker-users-db"
 # database_id = "1fc92714-3b16-4d5e-a90c-6bfcb8d68ea7"
+
+# 若启用 R2 增量缓存，参见 https://opennext.js.org/cloudflare/caching
+# [[r2_buckets]]
+# binding = "NEXT_INC_CACHE_R2_BUCKET"
+# bucket_name = "snooker-rankings-opennext-cache"
+
+# 若使用 Next 图片优化，参见 https://opennext.js.org/cloudflare/howtos/image
+# [images]
+# binding = "IMAGES"

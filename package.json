@@ -7,9 +7,9 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "cf:build": "./node_modules/.bin/opennextjs-cloudflare build",
-    "preview": "pnpm run cf:build && wrangler pages dev .open-next/assets",
-    "deploy": "pnpm run cf:build && wrangler pages deploy .open-next/assets"
+    "cf:build": "opennextjs-cloudflare build",
+    "preview": "pnpm run cf:build && opennextjs-cloudflare preview",
+    "deploy": "opennextjs-cloudflare build && opennextjs-cloudflare deploy"
   },
   "dependencies": {
     "next": "^15.5.2",
