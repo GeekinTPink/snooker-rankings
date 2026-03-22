@@ -7,9 +7,9 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "cf:build": "npm install --legacy-peer-deps && ./node_modules/.bin/opennextjs-cloudflare build",
-    "preview": "npm run cf:build && wrangler pages dev .open-next/assets",
-    "deploy": "npm run cf:build && wrangler pages deploy .open-next/assets"
+    "cf:build": "./node_modules/.bin/opennextjs-cloudflare build",
+    "preview": "pnpm run cf:build && wrangler pages dev .open-next/assets",
+    "deploy": "pnpm run cf:build && wrangler pages deploy .open-next/assets"
   },
   "dependencies": {
     "next": "^15.5.2",
@@ -20,6 +20,7 @@
   "devDependencies": {
     "@opennextjs/cloudflare": "^1.17.1",
     "@types/node": "^20.11.0",
+    "@types/node-fetch": "^2.6.13",
     "@types/react": "^18.2.0",
     "@types/react-dom": "^18.2.0",
     "autoprefixer": "^10.4.17",
