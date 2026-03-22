@@ -14,11 +14,11 @@ binding = "ASSETS"
 binding = "WORKER_SELF_REFERENCE"
 service = "snooker-rankings"
 
-# D1（需在 Dashboard 绑定后取消注释）
-# [[d1_databases]]
-# binding = "DB"
-# database_name = "snooker-users-db"
-# database_id = "1fc92714-3b16-4d5e-a90c-6bfcb8d68ea7"
+# D1 Database Binding
+[[d1_databases]]
+binding = "DB"
+database_name = "snooker-users-db"
+database_id = "1fc92714-3b16-4d5e-a90c-6bfcb8d68ea7"
 
 # 若启用 R2 增量缓存，参见 https://opennext.js.org/cloudflare/caching
 # [[r2_buckets]]
