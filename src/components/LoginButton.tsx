@@ -15,7 +15,7 @@ export default function LoginButton() {
           <p className="text-gray-400 text-xs">{session.user?.email}</p>
         </div>
         <button
-          onClick={() => signOut({ callbackUrl: '/' })}
+          onClick={() => signOut({ callbackUrl: '/login' })}
           className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors text-sm"
         >
           Sign Out

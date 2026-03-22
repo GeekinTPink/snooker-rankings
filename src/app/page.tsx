@@ -1,10 +1,36 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { useSession } from 'next-auth/react'
+import { useRouter } from 'next/navigation'
 import { players, metadata } from '../data/rankings'
 import LoginButton from '@/components/LoginButton'
 
 export default function Home() {
+  const { data: session, status } = useSession()
+  const router = useRouter()
+  
+  // 检查登录状态，未登录重定向到登录页
+  useEffect(() => {
+    if (status === 'unauthenticated') {
+      router.push('/login')
+    }
+  }, [status, router])
+  
+  // 加载中或已登录才显示内容
+  if (status === 'loading') {
+    return (
+      <main className="min-h-screen bg-gradient-to-b from-snooker-green to-gray-900 flex items-center justify-center">
+        <div className="text-white text-xl">Loading...</div>
+      </main>
+    )
+  }
+  
+  // 未登录时不渲染内容（会被重定向）
+  if (!session) {
+    return null
+  }
+
   const [searchTerm, setSearchTerm] = useState('')
   
   const filteredPlayers = players.filter(player =>
