@@ -54,7 +54,7 @@ async function upsertUser(db: any, user: {
   email: string
   name: string | null
   image: string | null
-  emailVerified: Date | null
+  email_verified: string | null
 }) {
   await db.prepare(`
     INSERT INTO users (id, email, name, image, email_verified, updated_at)
@@ -68,9 +68,9 @@ async function upsertUser(db: any, user: {
   `).run(
     user.id,
     user.email,
-    user.name || null,
-    user.image || null,
-    user.emailVerified || null
+    user.name,
+    user.image,
+    user.email_verified
   )
 }
 
@@ -126,9 +126,9 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     },
     
     /**
-     * JWT 回调 - 用户登录时将信息存储到 D1
+     * JWT 回调 - 用户登录时将信息添加到 token
      */
-    async jwt({ token, user, account, profile }) {
+    async jwt({ token, user }) {
       // 初次登录时，user 对象存在
       if (user && token.sub) {
         // 将用户信息添加到 token 中
@@ -155,28 +155,26 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     /**
      * signIn 回调 - 用户成功登录时存储到 D1
      */
-    async signIn({ user, account, profile }) {
+    async signIn({ user, account }) {
       if (account?.provider === "google" && user.email) {
         try {
           // 获取 D1 数据库绑定（在 Workers 环境中可用）
           const db = (globalThis as any).DB
           
-          if (db) {
+          if (db && user.id) {
             // 初始化表
             await initDB(db)
             
-            // 存储用户信息（确保 id 存在）
-            if (user.id) {
-              await upsertUser(db, {
-                id: user.id,
-                email: user.email,
-                name: user.name ?? null,
-                image: user.image ?? null,
-                emailVerified: user.emailVerified ?? null
-              })
-              
-              console.log(`User stored in D1: ${user.email}`)
-            }
+            // 存储用户信息
+            await upsertUser(db, {
+              id: user.id,
+              email: user.email,
+              name: user.name ?? null,
+              image: user.image ?? null,
+              email_verified: null // Google OAuth 暂不存储验证时间
+            })
+            
+            console.log(`User stored in D1: ${user.email}`)
           }
         } catch (error) {
           console.error('Error storing user in D1:', error)
