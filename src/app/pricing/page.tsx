@@ -68,8 +68,14 @@ export default function PricingPage() {
   ]
 
   const handlePlanSelect = (plan: string) => {
+    console.log('Plan selected:', plan, 'Status:', status, 'Session:', session)
     if (status === 'unauthenticated') {
+      console.log('Redirecting to login...')
       router.push('/login?callbackUrl=/pricing')
+      return
+    }
+    if (status === 'loading') {
+      console.log('Still loading session...')
       return
     }
     setSelectedPlan(plan)
@@ -84,7 +90,7 @@ export default function PricingPage() {
   return (
     <PayPalScriptProvider
       options={{
-        clientId: process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID!,
+        clientId: process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID || '',
         currency: 'CNY',
         intent: 'capture',
       }}
