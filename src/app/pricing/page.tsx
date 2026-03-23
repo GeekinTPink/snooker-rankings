@@ -378,7 +378,7 @@ export default function PricingPage() {
       <div className="max-w-4xl mx-auto px-4 pb-16">
         <h2 className="text-3xl font-bold text-white text-center mb-8">常见问题</h2>
         <div className="space-y-4">
-          <FAQItem question="如何取消订阅？" answer="随时可以在个人中心的"订阅管理"页面取消订阅。取消后，当前周期结束前仍可正常使用所有功能。" />
+          <FAQItem question="如何取消订阅？" answer="随时可以在个人中心的订阅管理页面取消订阅。取消后，当前周期结束前仍可正常使用所有功能。" />
           <FAQItem question="支持退款吗？" answer="订阅后 7 天内如不满意可申请全额退款。请联系客服邮箱 support@snooker-ranking.com" />
           <FAQItem question="可以升级或降级套餐吗？" answer="可以随时升级套餐，差价按比例计算。降级将在当前周期结束后生效。" />
           <FAQItem question="支持哪些支付方式？" answer="目前支持 PayPal、信用卡（Visa/Mastercard/Amex）。后续将支持微信支付和支付宝。" />
