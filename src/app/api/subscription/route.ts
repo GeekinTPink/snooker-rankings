@@ -1,0 +1,230 @@
+import { NextResponse } from 'next/server'
+import { auth } from '@/auth'
+
+/**
+ * GET /api/subscription
+ * 获取当前用户的订阅状态
+ */
+export async function GET() {
+  try {
+    const session = await auth()
+    
+    if (!session?.user) {
+      return NextResponse.json(
+        { error: 'Unauthorized' },
+        { status: 401 }
+      )
+    }
+    
+    const db = (globalThis as any).DB
+    
+    if (!db) {
+      return NextResponse.json({
+        plan: 'free',
+        status: 'active',
+        features: {
+          realtime: false,
+          ads: true,
+          apiCallsRemaining: 0,
+          exportsRemaining: 0,
+          devicesLimit: 1,
+        }
+      })
+    }
+    
+    // 获取用户订阅信息
+    const user = await db.prepare(
+      'SELECT plan, plan_expires_at, trial_ends_at FROM users WHERE id = ?'
+    ).bind(session.user.id).first()
+    
+    if (!user) {
+      return NextResponse.json({
+        plan: 'free',
+        status: 'active',
+        features: {
+          realtime: false,
+          ads: true,
+          apiCallsRemaining: 0,
+          exportsRemaining: 0,
+          devicesLimit: 1,
+        }
+      })
+    }
+    
+    // 检查订阅是否过期
+    const now = new Date()
+    const planExpiresAt = user.plan_expires_at ? new Date(user.plan_expires_at) : null
+    const trialEndsAt = user.trial_ends_at ? new Date(user.trial_ends_at) : null
+    
+    let status = 'active'
+    let plan = user.plan || 'free'
+    
+    // 检查试用是否结束
+    if (trialEndsAt && now > trialEndsAt && plan === 'free') {
+      // 试用结束，降级为 free
+      plan = 'free'
+    }
+    
+    // 检查订阅是否过期
+    if (planExpiresAt && now > planExpiresAt && plan !== 'free') {
+      status = 'expired'
+      plan = 'free'
+    }
+    
+    // 获取功能权限
+    const features = getPlanFeatures(plan)
+    
+    return NextResponse.json({
+      plan: plan,
+      status: status,
+      currentPeriodEnd: planExpiresAt?.toISOString(),
+      trialEndsAt: trialEndsAt?.toISOString(),
+      billingCycle: 'monthly', // TODO: 从订阅表获取
+      cancelAtPeriodEnd: false,
+      features: features
+    })
+  } catch (error) {
+    console.error('Error fetching subscription:', error)
+    return NextResponse.json(
+      { error: 'Internal server error' },
+      { status: 500 }
+    )
+  }
+}
+
+/**
+ * POST /api/subscription
+ * 创建订阅（PayPal）
+ */
+export async function POST(request: Request) {
+  try {
+    const session = await auth()
+    
+    if (!session?.user) {
+      return NextResponse.json(
+        { error: 'Unauthorized' },
+        { status: 401 }
+      )
+    }
+    
+    const body = await request.json()
+    const { plan, billingCycle } = body
+    
+    // 验证参数
+    if (!plan || !['pro', 'premium'].includes(plan)) {
+      return NextResponse.json(
+        { error: 'Invalid plan' },
+        { status: 400 }
+      )
+    }
+    
+    if (!billingCycle || !['monthly', 'yearly'].includes(billingCycle)) {
+      return NextResponse.json(
+        { error: 'Invalid billing cycle' },
+        { status: 400 }
+      )
+    }
+    
+    const db = (globalThis as any).DB
+    
+    if (!db) {
+      return NextResponse.json(
+        { error: 'Database not available' },
+        { status: 500 }
+      )
+    }
+    
+    // 获取价格
+    const pricingPlan = await db.prepare(
+      'SELECT monthly_price, yearly_price FROM pricing_plans WHERE plan_key = ? AND is_active = 1'
+    ).bind(plan).first()
+    
+    if (!pricingPlan) {
+      return NextResponse.json(
+        { error: 'Plan not found' },
+        { status: 404 }
+      )
+    }
+    
+    const amount = billingCycle === 'yearly' ? pricingPlan.yearly_price : pricingPlan.monthly_price
+    
+    // TODO: 创建 PayPal 订单
+    // 这里需要集成 PayPal API
+    // 1. 调用 PayPal Create Order API
+    // 2. 返回 orderID 给前端
+    // 3. 前端完成 PayPal 支付后，调用 /api/subscription/approve
+    
+    // 示例：返回 PayPal 订单创建所需的参数
+    const paypalOrderData = {
+      intent: 'CAPTURE',
+      purchase_units: [{
+        amount: {
+          currency_code: 'CNY',
+          value: amount.toString(),
+        },
+        description: `Snooker Rankings ${plan.toUpperCase()} - ${billingCycle === 'yearly' ? 'Yearly' : 'Monthly'}`,
+      }],
+    }
+    
+    // TODO: 实际调用 PayPal API
+    console.log('Creating PayPal order:', paypalOrderData)
+    
+    // 临时返回模拟数据
+    return NextResponse.json({
+      plan,
+      billingCycle,
+      amount,
+      currency: 'CNY',
+      paypalOrder: paypalOrderData,
+      // 实际应该返回 PayPal orderID
+      orderID: 'MOCK_ORDER_ID_' + Date.now(),
+    })
+  } catch (error) {
+    console.error('Error creating subscription:', error)
+    return NextResponse.json(
+      { error: 'Internal server error' },
+      { status: 500 }
+    )
+  }
+}
+
+/**
+ * 获取计划功能
+ */
+function getPlanFeatures(plan: string) {
+  switch (plan) {
+    case 'premium':
+      return {
+        realtime: true,
+        ads: false,
+        apiCallsRemaining: 500,
+        exportsRemaining: 100,
+        devicesLimit: 3,
+        dataHistoryDays: 0, // unlimited
+        advancedStats: true,
+        predictions: true,
+      }
+    case 'pro':
+      return {
+        realtime: true,
+        ads: false,
+        apiCallsRemaining: 0,
+        exportsRemaining: 0,
+        devicesLimit: 2,
+        dataHistoryDays: 1825, // 5 years
+        advancedStats: false,
+        predictions: false,
+      }
+    default: // free
+      return {
+        realtime: false,
+        ads: true,
+        apiCallsRemaining: 0,
+        exportsRemaining: 0,
+        devicesLimit: 1,
+        dataHistoryDays: 1,
+        advancedStats: false,
+        predictions: false,
+      }
+  }
+}
