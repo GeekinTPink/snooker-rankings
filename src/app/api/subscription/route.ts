@@ -159,17 +159,27 @@ export async function POST(request: Request) {
     
     const db = (globalThis as any).DB
     
-    if (!db) {
-      return NextResponse.json(
-        { error: 'Database not available' },
-        { status: 500 }
-      )
+    // 如果数据库不可用，使用默认价格
+    let amount = 0
+    if (db) {
+      const pricingPlan = await db.prepare(
+        'SELECT monthly_price, yearly_price FROM pricing_plans WHERE plan_key = ? AND is_active = 1'
+      ).bind(plan).first()
+      
+      if (!pricingPlan) {
+        return NextResponse.json(
+          { error: 'Plan not found' },
+          { status: 404 }
+        )
+      }
+      
+      amount = billingCycle === 'yearly' ? pricingPlan.yearly_price : pricingPlan.monthly_price
+    } else {
+      // 默认价格（fallback）
+      amount = plan === 'premium' 
+        ? (billingCycle === 'yearly' ? 499 : 49)
+        : (billingCycle === 'yearly' ? 199 : 19)
     }
-    
-    // 获取价格
-    const pricingPlan = await db.prepare(
-      'SELECT monthly_price, yearly_price FROM pricing_plans WHERE plan_key = ? AND is_active = 1'
-    ).bind(plan).first()
     
     if (!pricingPlan) {
       return NextResponse.json(
