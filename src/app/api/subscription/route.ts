@@ -1,6 +1,38 @@
 import { NextResponse } from 'next/server'
 import { auth } from '@/auth'
 
+const PAYPAL_BASE_URL = process.env.PAYPAL_MODE === 'live'
+  ? 'https://api-m.paypal.com'
+  : 'https://api-m.sandbox.paypal.com'
+
+/**
+ * 获取 PayPal Access Token
+ */
+async function getPayPalAccessToken() {
+  const clientId = process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID
+  const secret = process.env.PAYPAL_CLIENT_SECRET
+
+  if (!clientId || !secret) {
+    throw new Error('PayPal credentials not configured')
+  }
+
+  const response = await fetch(`${PAYPAL_BASE_URL}/v1/oauth2/token`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+      'Authorization': 'Basic ' + Buffer.from(`${clientId}:${secret}`).toString('base64'),
+    },
+    body: 'grant_type=client_credentials',
+  })
+
+  if (!response.ok) {
+    throw new Error('Failed to get PayPal access token')
+  }
+
+  const data = await response.json()
+  return data.access_token
+}
+
 /**
  * GET /api/subscription
  * 获取当前用户的订阅状态
@@ -148,36 +180,44 @@ export async function POST(request: Request) {
     
     const amount = billingCycle === 'yearly' ? pricingPlan.yearly_price : pricingPlan.monthly_price
     
-    // TODO: 创建 PayPal 订单
-    // 这里需要集成 PayPal API
-    // 1. 调用 PayPal Create Order API
-    // 2. 返回 orderID 给前端
-    // 3. 前端完成 PayPal 支付后，调用 /api/subscription/approve
+    // 获取 PayPal Access Token
+    const accessToken = await getPayPalAccessToken()
     
-    // 示例：返回 PayPal 订单创建所需的参数
-    const paypalOrderData = {
-      intent: 'CAPTURE',
-      purchase_units: [{
-        amount: {
-          currency_code: 'CNY',
-          value: amount.toString(),
-        },
-        description: `Snooker Rankings ${plan.toUpperCase()} - ${billingCycle === 'yearly' ? 'Yearly' : 'Monthly'}`,
-      }],
+    // 创建 PayPal Order
+    const paypalResponse = await fetch(`${PAYPAL_BASE_URL}/v2/checkout/orders`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${accessToken}`,
+      },
+      body: JSON.stringify({
+        intent: 'CAPTURE',
+        purchase_units: [
+          {
+            amount: {
+              currency_code: 'CNY',
+              value: amount.toString(),
+            },
+            description: `Snooker Rankings ${plan.toUpperCase()} - ${billingCycle === 'yearly' ? 'Yearly' : 'Monthly'}`,
+          },
+        ],
+      }),
+    })
+
+    if (!paypalResponse.ok) {
+      const errorData = await paypalResponse.json()
+      console.error('PayPal API error:', errorData)
+      throw new Error('Failed to create PayPal order')
     }
+
+    const orderData = await paypalResponse.json()
     
-    // TODO: 实际调用 PayPal API
-    console.log('Creating PayPal order:', paypalOrderData)
-    
-    // 临时返回模拟数据
     return NextResponse.json({
+      orderID: orderData.id,
       plan,
       billingCycle,
       amount,
       currency: 'CNY',
-      paypalOrder: paypalOrderData,
-      // 实际应该返回 PayPal orderID
-      orderID: 'MOCK_ORDER_ID_' + Date.now(),
     })
   } catch (error) {
     console.error('Error creating subscription:', error)

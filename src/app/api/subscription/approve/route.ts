@@ -1,6 +1,38 @@
 import { NextResponse } from 'next/server'
 import { auth } from '@/auth'
 
+const PAYPAL_BASE_URL = process.env.PAYPAL_MODE === 'live'
+  ? 'https://api-m.paypal.com'
+  : 'https://api-m.sandbox.paypal.com'
+
+/**
+ * 获取 PayPal Access Token
+ */
+async function getPayPalAccessToken() {
+  const clientId = process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID
+  const secret = process.env.PAYPAL_CLIENT_SECRET
+
+  if (!clientId || !secret) {
+    throw new Error('PayPal credentials not configured')
+  }
+
+  const response = await fetch(`${PAYPAL_BASE_URL}/v1/oauth2/token`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+      'Authorization': 'Basic ' + Buffer.from(`${clientId}:${secret}`).toString('base64'),
+    },
+    body: 'grant_type=client_credentials',
+  })
+
+  if (!response.ok) {
+    throw new Error('Failed to get PayPal access token')
+  }
+
+  const data = await response.json()
+  return data.access_token
+}
+
 /**
  * POST /api/subscription/approve
  * PayPal 支付审批回调
@@ -35,13 +67,38 @@ export async function POST(request: Request) {
       )
     }
     
-    // TODO: 调用 PayPal API 捕获订单
-    // 1. 验证 orderID
-    // 2. 捕获支付
-    // 3. 确认支付成功
+    // 获取 PayPal Access Token
+    const accessToken = await getPayPalAccessToken()
     
-    // 示例：模拟 PayPal 支付成功
-    console.log('Approving PayPal order:', orderID)
+    // 捕获 PayPal Order
+    const paypalResponse = await fetch(`${PAYPAL_BASE_URL}/v2/checkout/orders/${orderID}/capture`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${accessToken}`,
+      },
+    })
+
+    if (!paypalResponse.ok) {
+      const errorData = await paypalResponse.json()
+      console.error('PayPal capture error:', errorData)
+      return NextResponse.json(
+        { error: 'Payment capture failed' },
+        { status: 400 }
+      )
+    }
+
+    const captureData = await paypalResponse.json()
+    
+    // 确认支付状态
+    if (captureData.status !== 'COMPLETED') {
+      return NextResponse.json(
+        { error: 'Payment not completed' },
+        { status: 400 }
+      )
+    }
+    
+    console.log('PayPal payment captured:', orderID)
     
     // 获取价格
     const pricingPlan = await db.prepare(
