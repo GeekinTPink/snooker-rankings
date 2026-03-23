@@ -181,15 +181,6 @@ export async function POST(request: Request) {
         : (billingCycle === 'yearly' ? 199 : 19)
     }
     
-    if (!pricingPlan) {
-      return NextResponse.json(
-        { error: 'Plan not found' },
-        { status: 404 }
-      )
-    }
-    
-    const amount = billingCycle === 'yearly' ? pricingPlan.yearly_price : pricingPlan.monthly_price
-    
     // 获取 PayPal Access Token
     const accessToken = await getPayPalAccessToken()
     
