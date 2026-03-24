@@ -243,7 +243,6 @@ export default function PricingPage() {
                             body: JSON.stringify({
                               plan: plan.key,
                               billingCycle: isYearly ? 'yearly' : 'monthly',
-                              simulate: true, // 启用模拟支付
                             }),
                           })
 
@@ -252,13 +251,6 @@ export default function PricingPage() {
                           }
 
                           const data = await response.json()
-                          
-                          // 如果是模拟支付，跳转到模拟支付页面
-                          if (data.simulated && data.redirectUrl) {
-                            router.push(data.redirectUrl)
-                            return 'mock_order'
-                          }
-                          
                           return data.orderID
                         } catch (error) {
                           console.error('Create order error:', error)
@@ -268,11 +260,6 @@ export default function PricingPage() {
                         }
                       }}
                       onApprove={async (data) => {
-                        // 模拟支付不会触发 onApprove，由模拟页面直接处理
-                        if (data.orderID === 'mock_order') {
-                          return
-                        }
-                        
                         try {
                           const response = await fetch('/api/subscription/approve', {
                             method: 'POST',
