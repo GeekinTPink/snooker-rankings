@@ -49,7 +49,7 @@ export async function POST(request: Request) {
     }
     
     const body = await request.json()
-    const { orderID, plan, billingCycle } = body
+    const { orderID, plan, billingCycle, simulate } = body
     
     if (!orderID || !plan || !billingCycle) {
       return NextResponse.json(
@@ -60,38 +60,55 @@ export async function POST(request: Request) {
     
     const db = (globalThis as any).DB
     
-    // 获取 PayPal Access Token
-    const accessToken = await getPayPalAccessToken()
+    // 检查是否启用模拟支付模式
+    const simulatePayment = simulate === true || process.env.SIMULATE_PAYMENT === 'true' || orderID.startsWith('mock_order_')
     
-    // 捕获 PayPal Order
-    const paypalResponse = await fetch(`${PAYPAL_BASE_URL}/v2/checkout/orders/${orderID}/capture`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${accessToken}`,
-      },
-    })
+    if (simulatePayment) {
+      // 模拟支付模式：直接确认支付成功
+      console.log('[SIMULATE] Mock payment approved:', orderID, { plan, billingCycle })
+      
+      // 模拟 PayPal capture 成功响应
+      const captureData = {
+        status: 'COMPLETED',
+        id: orderID,
+      }
+      
+      console.log('[SIMULATE] Mock payment captured:', orderID)
+    } else {
+      // 真实支付模式：调用 PayPal API
+      // 获取 PayPal Access Token
+      const accessToken = await getPayPalAccessToken()
+      
+      // 捕获 PayPal Order
+      const paypalResponse = await fetch(`${PAYPAL_BASE_URL}/v2/checkout/orders/${orderID}/capture`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${accessToken}`,
+        },
+      })
 
-    if (!paypalResponse.ok) {
-      const errorData = await paypalResponse.json()
-      console.error('PayPal capture error:', errorData)
-      return NextResponse.json(
-        { error: 'Payment capture failed' },
-        { status: 400 }
-      )
-    }
+      if (!paypalResponse.ok) {
+        const errorData = await paypalResponse.json()
+        console.error('PayPal capture error:', errorData)
+        return NextResponse.json(
+          { error: 'Payment capture failed' },
+          { status: 400 }
+        )
+      }
 
-    const captureData = await paypalResponse.json()
-    
-    // 确认支付状态
-    if (captureData.status !== 'COMPLETED') {
-      return NextResponse.json(
-        { error: 'Payment not completed' },
-        { status: 400 }
-      )
+      const captureData = await paypalResponse.json()
+      
+      // 确认支付状态
+      if (captureData.status !== 'COMPLETED') {
+        return NextResponse.json(
+          { error: 'Payment not completed' },
+          { status: 400 }
+        )
+      }
+      
+      console.log('PayPal payment captured:', orderID)
     }
-    
-    console.log('PayPal payment captured:', orderID)
     
     // 获取价格（如果数据库不可用，使用默认价格）
     let amount = 0

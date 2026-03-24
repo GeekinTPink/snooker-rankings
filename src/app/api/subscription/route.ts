@@ -140,7 +140,7 @@ export async function POST(request: Request) {
     }
     
     const body = await request.json()
-    const { plan, billingCycle } = body
+    const { plan, billingCycle, simulate } = body
     
     // 验证参数
     if (!plan || !['pro', 'premium'].includes(plan)) {
@@ -181,6 +181,27 @@ export async function POST(request: Request) {
         : (billingCycle === 'yearly' ? 199 : 19)
     }
     
+    // 检查是否启用模拟支付模式
+    const simulatePayment = simulate === true || process.env.SIMULATE_PAYMENT === 'true'
+    
+    if (simulatePayment) {
+      // 模拟支付模式：直接返回模拟订单 ID，跳转到支付界面
+      const mockOrderID = 'mock_order_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9)
+      
+      console.log('[SIMULATE] Creating mock order:', mockOrderID, { plan, billingCycle, amount })
+      
+      return NextResponse.json({
+        orderID: mockOrderID,
+        plan,
+        billingCycle,
+        amount,
+        currency: 'CNY',
+        simulated: true,
+        redirectUrl: `/payment/simulate?orderID=${mockOrderID}&plan=${plan}&billingCycle=${billingCycle}&amount=${amount}`,
+      })
+    }
+    
+    // 真实支付模式：调用 PayPal API
     // 获取 PayPal Access Token
     const accessToken = await getPayPalAccessToken()
     
@@ -219,6 +240,7 @@ export async function POST(request: Request) {
       billingCycle,
       amount,
       currency: 'CNY',
+      simulated: false,
     })
   } catch (error) {
     console.error('Error creating subscription:', error)
