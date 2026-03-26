@@ -143,7 +143,7 @@ export async function POST(request: Request) {
           plan,
           billingCycle,
           amount,
-          'CNY',
+          'USD',
           'active',
           currentPeriodStart,
           currentPeriodEnd,

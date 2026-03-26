@@ -91,7 +91,7 @@ export default function PricingPage() {
     <PayPalScriptProvider
       options={{
         clientId: process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID || '',
-        currency: 'CNY',
+        currency: 'USD',
         intent: 'capture',
       }}
     >
@@ -261,6 +261,8 @@ export default function PricingPage() {
                       }}
                       onApprove={async (data) => {
                         try {
+                          console.log('PayPal onApprove called with orderID:', data.orderID)
+                          
                           const response = await fetch('/api/subscription/approve', {
                             method: 'POST',
                             headers: { 'Content-Type': 'application/json' },
@@ -271,7 +273,9 @@ export default function PricingPage() {
                             }),
                           })
 
+                          console.log('Approval response status:', response.status)
                           const result = await response.json()
+                          console.log('Approval response:', result)
 
                           if (result.success) {
                             alert('🎉 订阅成功！\n感谢您的支持，现在可以畅享所有功能了！')
@@ -281,15 +285,15 @@ export default function PricingPage() {
                           }
                         } catch (error) {
                           console.error('Approve error:', error)
-                          alert('支付处理失败，请联系客服')
+                          alert(`支付处理失败：${error instanceof Error ? error.message : '未知错误'}\n\n请检查：\n1. 是否已登录\n2. PayPal 账户是否有足够余额\n3. 联系技术支持`)
+                          setSelectedPlan(null)
                         } finally {
                           setIsProcessing(false)
-                          setSelectedPlan(null)
                         }
                       }}
                       onError={(err) => {
-                        console.error('PayPal error:', err)
-                        alert('支付失败，请重试或联系客服')
+                        console.error('PayPal onError:', err)
+                        alert(`支付失败：${err.message || '未知错误'}\n\n错误详情已记录，请重试或联系客服`)
                         setIsProcessing(false)
                         setSelectedPlan(null)
                       }}

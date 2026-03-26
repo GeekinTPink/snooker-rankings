@@ -196,7 +196,7 @@ export async function POST(request: Request) {
         purchase_units: [
           {
             amount: {
-              currency_code: 'CNY',
+              currency_code: 'USD',
               value: amount.toString(),
             },
             description: `Snooker Rankings ${plan.toUpperCase()} - ${billingCycle === 'yearly' ? 'Yearly' : 'Monthly'}`,
@@ -218,7 +218,7 @@ export async function POST(request: Request) {
       plan,
       billingCycle,
       amount,
-      currency: 'CNY',
+      currency: 'USD',
     })
   } catch (error) {
     console.error('Error creating subscription:', error)

@@ -32,3 +32,4 @@ database_id = "1fc92714-3b16-4d5e-a90c-6bfcb8d68ea7"
 # Environment Variables (public, build-time)
 [vars]
 NEXT_PUBLIC_PAYPAL_CLIENT_ID = "AQR_stQAkE2X007Q1-pqgMKjT9G1VgP44EFBW-2FhJxwIoFF9gHB1bedOwdHPLLF869unxqX48pQIRhs"
+PAYPAL_MODE = "live"
