@@ -94,7 +94,7 @@ export async function POST(request: Request) {
     console.log('PayPal payment captured:', orderID)
     
     // 获取价格（如果数据库不可用，使用默认价格）
-    let amount = 0
+    let amountCNY = 0
     if (db) {
       const pricingPlan = await db.prepare(
         'SELECT monthly_price, yearly_price FROM pricing_plans WHERE plan_key = ? AND is_active = 1'
@@ -107,13 +107,16 @@ export async function POST(request: Request) {
         )
       }
       
-      amount = billingCycle === 'yearly' ? pricingPlan.yearly_price : pricingPlan.monthly_price
+      amountCNY = billingCycle === 'yearly' ? pricingPlan.yearly_price : pricingPlan.monthly_price
     } else {
       // 默认价格（fallback）
-      amount = plan === 'premium' 
+      amountCNY = plan === 'premium' 
         ? (billingCycle === 'yearly' ? 499 : 49)
         : (billingCycle === 'yearly' ? 199 : 19)
     }
+    
+    // 转换为 USD（用于数据库记录）
+    const amountUSD = (amountCNY / 7.2).toFixed(2)
     
     // 计算周期
     const now = new Date()
@@ -142,8 +145,8 @@ export async function POST(request: Request) {
           session.user.id,
           plan,
           billingCycle,
-          amount,
-          'CNY',
+          amountUSD,
+          'USD',
           'active',
           currentPeriodStart,
           currentPeriodEnd,

@@ -196,8 +196,8 @@ export async function POST(request: Request) {
         purchase_units: [
           {
             amount: {
-              currency_code: 'CNY',
-              value: amount.toString(),
+              currency_code: 'USD',
+              value: (amount / 7.2).toFixed(2), // CNY 转 USD（近似汇率）
             },
             description: `Snooker Rankings ${plan.toUpperCase()} - ${billingCycle === 'yearly' ? 'Yearly' : 'Monthly'}`,
           },
@@ -218,7 +218,7 @@ export async function POST(request: Request) {
       plan,
       billingCycle,
       amount,
-      currency: 'CNY',
+      currency: 'USD',
     })
   } catch (error) {
     console.error('Error creating subscription:', error)

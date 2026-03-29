@@ -1,0 +1,903 @@
+{
+  "lastUpdated": "2026-03-28T03:01:50.172373",
+  "source": "manual",
+  "playerCount": 128,
+  "players": [
+    {
+      "rank": 1,
+      "name": "Judd Trump",
+      "points": 1869000,
+      "country": "England",
+      "trend": "same"
+    },
+    {
+      "rank": 2,
+      "name": "Kyren Wilson",
+      "points": 1421000,
+      "country": "England",
+      "trend": "up"
+    },
+    {
+      "rank": 3,
+      "name": "Mark Allen",
+      "points": 1259000,
+      "country": "Northern Ireland",
+      "trend": "down"
+    },
+    {
+      "rank": 4,
+      "name": "Ronnie O'Sullivan",
+      "points": 1197000,
+      "country": "England",
+      "trend": "same"
+    },
+    {
+      "rank": 5,
+      "name": "Luca Brecel",
+      "points": 1086000,
+      "country": "Belgium",
+      "trend": "down"
+    },
+    {
+      "rank": 6,
+      "name": "Mark Selby",
+      "points": 987000,
+      "country": "England",
+      "trend": "up"
+    },
+    {
+      "rank": 7,
+      "name": "John Higgins",
+      "points": 912000,
+      "country": "Scotland",
+      "trend": "same"
+    },
+    {
+      "rank": 8,
+      "name": "Neil Robertson",
+      "points": 876000,
+      "country": "Australia",
+      "trend": "down"
+    },
+    {
+      "rank": 9,
+      "name": "Ding Junhui",
+      "points": 834000,
+      "country": "China",
+      "trend": "up"
+    },
+    {
+      "rank": 10,
+      "name": "Shaun Murphy",
+      "points": 789000,
+      "country": "England",
+      "trend": "up"
+    },
+    {
+      "rank": 11,
+      "name": "Barry Hawkins",
+      "points": 745000,
+      "country": "England",
+      "trend": "same"
+    },
+    {
+      "rank": 12,
+      "name": "Zhang Anda",
+      "points": 712000,
+      "country": "China",
+      "trend": "up"
+    },
+    {
+      "rank": 13,
+      "name": "Tom Ford",
+      "points": 678000,
+      "country": "England",
+      "trend": "down"
+    },
+    {
+      "rank": 14,
+      "name": "Stuart Bingham",
+      "points": 645000,
+      "country": "England",
+      "trend": "same"
+    },
+    {
+      "rank": 15,
+      "name": "Gary Wilson",
+      "points": 612000,
+      "country": "England",
+      "trend": "down"
+    },
+    {
+      "rank": 16,
+      "name": "Joe O'Connor",
+      "points": 589000,
+      "country": "England",
+      "trend": "up"
+    },
+    {
+      "rank": 17,
+      "name": "Ali Carter",
+      "points": 567000,
+      "country": "England",
+      "trend": "same"
+    },
+    {
+      "rank": 18,
+      "name": "Ryan Day",
+      "points": 545000,
+      "country": "Wales",
+      "trend": "up"
+    },
+    {
+      "rank": 19,
+      "name": "Robert Milkins",
+      "points": 523000,
+      "country": "England",
+      "trend": "down"
+    },
+    {
+      "rank": 20,
+      "name": "Stephen Maguire",
+      "points": 501000,
+      "country": "Scotland",
+      "trend": "same"
+    },
+    {
+      "rank": 21,
+      "name": "Player 21",
+      "points": 426500,
+      "country": "Scotland",
+      "trend": "same"
+    },
+    {
+      "rank": 22,
+      "name": "Player 22",
+      "points": 423000,
+      "country": "Belgium",
+      "trend": "down"
+    },
+    {
+      "rank": 23,
+      "name": "Player 23",
+      "points": 419500,
+      "country": "India",
+      "trend": "down"
+    },
+    {
+      "rank": 24,
+      "name": "Player 24",
+      "points": 416000,
+      "country": "England",
+      "trend": "down"
+    },
+    {
+      "rank": 25,
+      "name": "Player 25",
+      "points": 412500,
+      "country": "Northern Ireland",
+      "trend": "up"
+    },
+    {
+      "rank": 26,
+      "name": "Player 26",
+      "points": 409000,
+      "country": "India",
+      "trend": "same"
+    },
+    {
+      "rank": 27,
+      "name": "Player 27",
+      "points": 405500,
+      "country": "Belgium",
+      "trend": "down"
+    },
+    {
+      "rank": 28,
+      "name": "Player 28",
+      "points": 402000,
+      "country": "Australia",
+      "trend": "same"
+    },
+    {
+      "rank": 29,
+      "name": "Player 29",
+      "points": 398500,
+      "country": "India",
+      "trend": "same"
+    },
+    {
+      "rank": 30,
+      "name": "Player 30",
+      "points": 395000,
+      "country": "England",
+      "trend": "up"
+    },
+    {
+      "rank": 31,
+      "name": "Player 31",
+      "points": 391500,
+      "country": "Scotland",
+      "trend": "same"
+    },
+    {
+      "rank": 32,
+      "name": "Player 32",
+      "points": 388000,
+      "country": "England",
+      "trend": "same"
+    },
+    {
+      "rank": 33,
+      "name": "Player 33",
+      "points": 384500,
+      "country": "Belgium",
+      "trend": "down"
+    },
+    {
+      "rank": 34,
+      "name": "Player 34",
+      "points": 381000,
+      "country": "China",
+      "trend": "down"
+    },
+    {
+      "rank": 35,
+      "name": "Player 35",
+      "points": 377500,
+      "country": "Northern Ireland",
+      "trend": "up"
+    },
+    {
+      "rank": 36,
+      "name": "Player 36",
+      "points": 374000,
+      "country": "Australia",
+      "trend": "up"
+    },
+    {
+      "rank": 37,
+      "name": "Player 37",
+      "points": 370500,
+      "country": "Scotland",
+      "trend": "same"
+    },
+    {
+      "rank": 38,
+      "name": "Player 38",
+      "points": 367000,
+      "country": "India",
+      "trend": "down"
+    },
+    {
+      "rank": 39,
+      "name": "Player 39",
+      "points": 363500,
+      "country": "Scotland",
+      "trend": "down"
+    },
+    {
+      "rank": 40,
+      "name": "Player 40",
+      "points": 360000,
+      "country": "Northern Ireland",
+      "trend": "up"
+    },
+    {
+      "rank": 41,
+      "name": "Player 41",
+      "points": 356500,
+      "country": "Northern Ireland",
+      "trend": "down"
+    },
+    {
+      "rank": 42,
+      "name": "Player 42",
+      "points": 353000,
+      "country": "China",
+      "trend": "down"
+    },
+    {
+      "rank": 43,
+      "name": "Player 43",
+      "points": 349500,
+      "country": "Thailand",
+      "trend": "same"
+    },
+    {
+      "rank": 44,
+      "name": "Player 44",
+      "points": 346000,
+      "country": "Australia",
+      "trend": "down"
+    },
+    {
+      "rank": 45,
+      "name": "Player 45",
+      "points": 342500,
+      "country": "Thailand",
+      "trend": "same"
+    },
+    {
+      "rank": 46,
+      "name": "Player 46",
+      "points": 339000,
+      "country": "Iran",
+      "trend": "same"
+    },
+    {
+      "rank": 47,
+      "name": "Player 47",
+      "points": 335500,
+      "country": "Scotland",
+      "trend": "up"
+    },
+    {
+      "rank": 48,
+      "name": "Player 48",
+      "points": 332000,
+      "country": "China",
+      "trend": "same"
+    },
+    {
+      "rank": 49,
+      "name": "Player 49",
+      "points": 328500,
+      "country": "India",
+      "trend": "down"
+    },
+    {
+      "rank": 50,
+      "name": "Player 50",
+      "points": 325000,
+      "country": "China",
+      "trend": "same"
+    },
+    {
+      "rank": 51,
+      "name": "Player 51",
+      "points": 321500,
+      "country": "England",
+      "trend": "down"
+    },
+    {
+      "rank": 52,
+      "name": "Player 52",
+      "points": 318000,
+      "country": "India",
+      "trend": "same"
+    },
+    {
+      "rank": 53,
+      "name": "Player 53",
+      "points": 314500,
+      "country": "China",
+      "trend": "down"
+    },
+    {
+      "rank": 54,
+      "name": "Player 54",
+      "points": 311000,
+      "country": "Wales",
+      "trend": "down"
+    },
+    {
+      "rank": 55,
+      "name": "Player 55",
+      "points": 307500,
+      "country": "India",
+      "trend": "same"
+    },
+    {
+      "rank": 56,
+      "name": "Player 56",
+      "points": 304000,
+      "country": "Australia",
+      "trend": "up"
+    },
+    {
+      "rank": 57,
+      "name": "Player 57",
+      "points": 300500,
+      "country": "India",
+      "trend": "same"
+    },
+    {
+      "rank": 58,
+      "name": "Player 58",
+      "points": 297000,
+      "country": "Thailand",
+      "trend": "down"
+    },
+    {
+      "rank": 59,
+      "name": "Player 59",
+      "points": 293500,
+      "country": "India",
+      "trend": "same"
+    },
+    {
+      "rank": 60,
+      "name": "Player 60",
+      "points": 290000,
+      "country": "England",
+      "trend": "same"
+    },
+    {
+      "rank": 61,
+      "name": "Player 61",
+      "points": 286500,
+      "country": "China",
+      "trend": "up"
+    },
+    {
+      "rank": 62,
+      "name": "Player 62",
+      "points": 283000,
+      "country": "Australia",
+      "trend": "up"
+    },
+    {
+      "rank": 63,
+      "name": "Player 63",
+      "points": 279500,
+      "country": "Iran",
+      "trend": "down"
+    },
+    {
+      "rank": 64,
+      "name": "Player 64",
+      "points": 276000,
+      "country": "Scotland",
+      "trend": "same"
+    },
+    {
+      "rank": 65,
+      "name": "Player 65",
+      "points": 272500,
+      "country": "Australia",
+      "trend": "down"
+    },
+    {
+      "rank": 66,
+      "name": "Player 66",
+      "points": 269000,
+      "country": "Northern Ireland",
+      "trend": "same"
+    },
+    {
+      "rank": 67,
+      "name": "Player 67",
+      "points": 265500,
+      "country": "India",
+      "trend": "up"
+    },
+    {
+      "rank": 68,
+      "name": "Player 68",
+      "points": 262000,
+      "country": "Scotland",
+      "trend": "same"
+    },
+    {
+      "rank": 69,
+      "name": "Player 69",
+      "points": 258500,
+      "country": "Iran",
+      "trend": "up"
+    },
+    {
+      "rank": 70,
+      "name": "Player 70",
+      "points": 255000,
+      "country": "England",
+      "trend": "up"
+    },
+    {
+      "rank": 71,
+      "name": "Player 71",
+      "points": 251500,
+      "country": "India",
+      "trend": "down"
+    },
+    {
+      "rank": 72,
+      "name": "Player 72",
+      "points": 248000,
+      "country": "Scotland",
+      "trend": "same"
+    },
+    {
+      "rank": 73,
+      "name": "Player 73",
+      "points": 244500,
+      "country": "Iran",
+      "trend": "up"
+    },
+    {
+      "rank": 74,
+      "name": "Player 74",
+      "points": 241000,
+      "country": "England",
+      "trend": "down"
+    },
+    {
+      "rank": 75,
+      "name": "Player 75",
+      "points": 237500,
+      "country": "Australia",
+      "trend": "same"
+    },
+    {
+      "rank": 76,
+      "name": "Player 76",
+      "points": 234000,
+      "country": "Northern Ireland",
+      "trend": "same"
+    },
+    {
+      "rank": 77,
+      "name": "Player 77",
+      "points": 230500,
+      "country": "Australia",
+      "trend": "up"
+    },
+    {
+      "rank": 78,
+      "name": "Player 78",
+      "points": 227000,
+      "country": "Australia",
+      "trend": "down"
+    },
+    {
+      "rank": 79,
+      "name": "Player 79",
+      "points": 223500,
+      "country": "Australia",
+      "trend": "down"
+    },
+    {
+      "rank": 80,
+      "name": "Player 80",
+      "points": 220000,
+      "country": "Northern Ireland",
+      "trend": "same"
+    },
+    {
+      "rank": 81,
+      "name": "Player 81",
+      "points": 216500,
+      "country": "England",
+      "trend": "up"
+    },
+    {
+      "rank": 82,
+      "name": "Player 82",
+      "points": 213000,
+      "country": "Australia",
+      "trend": "same"
+    },
+    {
+      "rank": 83,
+      "name": "Player 83",
+      "points": 209500,
+      "country": "India",
+      "trend": "up"
+    },
+    {
+      "rank": 84,
+      "name": "Player 84",
+      "points": 206000,
+      "country": "England",
+      "trend": "down"
+    },
+    {
+      "rank": 85,
+      "name": "Player 85",
+      "points": 202500,
+      "country": "China",
+      "trend": "up"
+    },
+    {
+      "rank": 86,
+      "name": "Player 86",
+      "points": 199000,
+      "country": "Northern Ireland",
+      "trend": "same"
+    },
+    {
+      "rank": 87,
+      "name": "Player 87",
+      "points": 195500,
+      "country": "Northern Ireland",
+      "trend": "same"
+    },
+    {
+      "rank": 88,
+      "name": "Player 88",
+      "points": 192000,
+      "country": "Australia",
+      "trend": "down"
+    },
+    {
+      "rank": 89,
+      "name": "Player 89",
+      "points": 188500,
+      "country": "Scotland",
+      "trend": "down"
+    },
+    {
+      "rank": 90,
+      "name": "Player 90",
+      "points": 185000,
+      "country": "Belgium",
+      "trend": "down"
+    },
+    {
+      "rank": 91,
+      "name": "Player 91",
+      "points": 181500,
+      "country": "China",
+      "trend": "up"
+    },
+    {
+      "rank": 92,
+      "name": "Player 92",
+      "points": 178000,
+      "country": "Australia",
+      "trend": "same"
+    },
+    {
+      "rank": 93,
+      "name": "Player 93",
+      "points": 174500,
+      "country": "Iran",
+      "trend": "up"
+    },
+    {
+      "rank": 94,
+      "name": "Player 94",
+      "points": 171000,
+      "country": "India",
+      "trend": "up"
+    },
+    {
+      "rank": 95,
+      "name": "Player 95",
+      "points": 167500,
+      "country": "India",
+      "trend": "same"
+    },
+    {
+      "rank": 96,
+      "name": "Player 96",
+      "points": 164000,
+      "country": "England",
+      "trend": "down"
+    },
+    {
+      "rank": 97,
+      "name": "Player 97",
+      "points": 160500,
+      "country": "Belgium",
+      "trend": "down"
+    },
+    {
+      "rank": 98,
+      "name": "Player 98",
+      "points": 157000,
+      "country": "China",
+      "trend": "same"
+    },
+    {
+      "rank": 99,
+      "name": "Player 99",
+      "points": 153500,
+      "country": "Wales",
+      "trend": "down"
+    },
+    {
+      "rank": 100,
+      "name": "Player 100",
+      "points": 150000,
+      "country": "Wales",
+      "trend": "down"
+    },
+    {
+      "rank": 101,
+      "name": "Player 101",
+      "points": 146500,
+      "country": "Australia",
+      "trend": "down"
+    },
+    {
+      "rank": 102,
+      "name": "Player 102",
+      "points": 143000,
+      "country": "Northern Ireland",
+      "trend": "up"
+    },
+    {
+      "rank": 103,
+      "name": "Player 103",
+      "points": 139500,
+      "country": "Australia",
+      "trend": "up"
+    },
+    {
+      "rank": 104,
+      "name": "Player 104",
+      "points": 136000,
+      "country": "Thailand",
+      "trend": "down"
+    },
+    {
+      "rank": 105,
+      "name": "Player 105",
+      "points": 132500,
+      "country": "Thailand",
+      "trend": "up"
+    },
+    {
+      "rank": 106,
+      "name": "Player 106",
+      "points": 129000,
+      "country": "Australia",
+      "trend": "same"
+    },
+    {
+      "rank": 107,
+      "name": "Player 107",
+      "points": 125500,
+      "country": "England",
+      "trend": "up"
+    },
+    {
+      "rank": 108,
+      "name": "Player 108",
+      "points": 122000,
+      "country": "Iran",
+      "trend": "up"
+    },
+    {
+      "rank": 109,
+      "name": "Player 109",
+      "points": 118500,
+      "country": "Thailand",
+      "trend": "up"
+    },
+    {
+      "rank": 110,
+      "name": "Player 110",
+      "points": 115000,
+      "country": "India",
+      "trend": "up"
+    },
+    {
+      "rank": 111,
+      "name": "Player 111",
+      "points": 111500,
+      "country": "England",
+      "trend": "same"
+    },
+    {
+      "rank": 112,
+      "name": "Player 112",
+      "points": 108000,
+      "country": "Australia",
+      "trend": "down"
+    },
+    {
+      "rank": 113,
+      "name": "Player 113",
+      "points": 104500,
+      "country": "Australia",
+      "trend": "down"
+    },
+    {
+      "rank": 114,
+      "name": "Player 114",
+      "points": 101000,
+      "country": "China",
+      "trend": "up"
+    },
+    {
+      "rank": 115,
+      "name": "Player 115",
+      "points": 97500,
+      "country": "Wales",
+      "trend": "same"
+    },
+    {
+      "rank": 116,
+      "name": "Player 116",
+      "points": 94000,
+      "country": "Thailand",
+      "trend": "down"
+    },
+    {
+      "rank": 117,
+      "name": "Player 117",
+      "points": 90500,
+      "country": "England",
+      "trend": "same"
+    },
+    {
+      "rank": 118,
+      "name": "Player 118",
+      "points": 87000,
+      "country": "Wales",
+      "trend": "down"
+    },
+    {
+      "rank": 119,
+      "name": "Player 119",
+      "points": 83500,
+      "country": "Scotland",
+      "trend": "up"
+    },
+    {
+      "rank": 120,
+      "name": "Player 120",
+      "points": 80000,
+      "country": "Belgium",
+      "trend": "down"
+    },
+    {
+      "rank": 121,
+      "name": "Player 121",
+      "points": 76500,
+      "country": "India",
+      "trend": "same"
+    },
+    {
+      "rank": 122,
+      "name": "Player 122",
+      "points": 73000,
+      "country": "Wales",
+      "trend": "same"
+    },
+    {
+      "rank": 123,
+      "name": "Player 123",
+      "points": 69500,
+      "country": "England",
+      "trend": "up"
+    },
+    {
+      "rank": 124,
+      "name": "Player 124",
+      "points": 66000,
+      "country": "India",
+      "trend": "same"
+    },
+    {
+      "rank": 125,
+      "name": "Player 125",
+      "points": 62500,
+      "country": "India",
+      "trend": "same"
+    },
+    {
+      "rank": 126,
+      "name": "Player 126",
+      "points": 59000,
+      "country": "Australia",
+      "trend": "same"
+    },
+    {
+      "rank": 127,
+      "name": "Player 127",
+      "points": 55500,
+      "country": "Thailand",
+      "trend": "same"
+    },
+    {
+      "rank": 128,
+      "name": "Player 128",
+      "points": 52000,
+      "country": "England",
+      "trend": "same"
+    }
+  ]
+}
