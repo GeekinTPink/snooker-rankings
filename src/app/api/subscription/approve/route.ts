@@ -179,7 +179,7 @@ export async function POST(request: Request) {
         id: subscriptionId,
         plan,
         billingCycle,
-        amount,
+        amount: amountUSD,
         status: 'active',
         currentPeriodEnd,
       }
