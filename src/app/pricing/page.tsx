@@ -17,52 +17,52 @@ export default function PricingPage() {
     {
       key: 'free',
       name: 'Free',
-      description: '适合偶尔查看排名的用户',
+      description: 'For casual users',
       monthlyPrice: 0,
       yearlyPrice: 0,
       features: [
-        { text: '当前世界排名', included: true },
-        { text: '本赛季赛程表', included: true },
-        { text: '近期比赛结果', included: true },
-        { text: '实时数据（延迟 24 小时）', included: false },
-        { text: '含广告', included: false },
+        { text: 'Current World Rankings', included: true },
+        { text: 'Current Season Schedule', included: true },
+        { text: 'Recent Match Results', included: true },
+        { text: 'Live Data (24h delay)', included: false },
+        { text: 'With Ads', included: false },
       ],
-      cta: '当前计划',
+      cta: 'Current Plan',
       featured: false,
     },
     {
       key: 'pro',
       name: 'Pro',
-      description: '适合斯诺克爱好者',
-      monthlyPrice: 19,
-      yearlyPrice: 199,
+      description: 'For snooker enthusiasts',
+      monthlyPrice: 2.99,
+      yearlyPrice: 29.99,
       features: [
-        { text: 'Free 全部功能', included: true },
-        { text: '实时数据更新', included: true },
-        { text: '历史数据（5 年）', included: true },
-        { text: '球员对比功能', included: true },
-        { text: '无广告体验', included: true },
-        { text: '比赛提醒推送', included: true },
+        { text: 'All Free Features', included: true },
+        { text: 'Real-time Data Updates', included: true },
+        { text: 'Historical Data (5 Years)', included: true },
+        { text: 'Player Comparison', included: true },
+        { text: 'Ad-free Experience', included: true },
+        { text: 'Match Notifications', included: true },
       ],
-      cta: '免费试用 7 天',
+      cta: 'Start 7-Day Free Trial',
       featured: true,
       badge: '最受欢迎 🔥',
     },
     {
       key: 'premium',
       name: 'Premium',
-      description: '适合专业分析师/媒体',
-      monthlyPrice: 49,
-      yearlyPrice: 499,
+      description: 'For professionals & media',
+      monthlyPrice: 6.99,
+      yearlyPrice: 69.99,
       features: [
-        { text: 'Pro 全部功能', included: true },
-        { text: '历史数据（全量）', included: true },
-        { text: '高级统计分析', included: true },
-        { text: '预测模型', included: true },
-        { text: '数据导出（CSV/Excel）', included: true },
-        { text: 'API 访问（500 次/月）', included: true },
+        { text: 'All Pro Features', included: true },
+        { text: 'Full Historical Data', included: true },
+        { text: 'Advanced Analytics', included: true },
+        { text: 'Prediction Models', included: true },
+        { text: 'Data Export (CSV/Excel)', included: true },
+        { text: 'API Access (500/month)', included: true },
       ],
-      cta: '立即订阅',
+      cta: 'Subscribe Now',
       featured: false,
     },
   ]
@@ -79,7 +79,7 @@ export default function PricingPage() {
     return isYearly ? plan.yearlyPrice : plan.monthlyPrice
   }
 
-  const period = isYearly ? '/年' : '/月'
+  const period = isYearly ? '/year' : '/month'
 
   return (
     <PayPalScriptProvider
@@ -107,23 +107,23 @@ export default function PricingPage() {
                       d="M10 19l-7-7m0 0l7-7m-7 7h18"
                     />
                   </svg>
-                  返回排名
+                  Back to Rankings
                 </button>
                 <h1 className="text-4xl md:text-5xl font-bold text-white">
-                  🎱 选择你的订阅方案
+                  🎱 Choose Your Subscription
                 </h1>
               </div>
               <LoginButton />
             </div>
             <p className="text-xl text-gray-300 text-center max-w-2xl mx-auto">
-              获取最全面的斯诺克数据，从实时排名到深度分析
+              Get comprehensive snooker data, from live rankings to deep analytics
             </p>
           </div>
         </header>
 
         {/* Billing Toggle */}
         <div className="flex justify-center items-center gap-4 py-12">
-          <span className={`font-medium ${!isYearly ? 'text-white' : 'text-gray-400'}`}>月付</span>
+          <span className={`font-medium ${!isYearly ? 'text-white' : 'text-gray-400'}`}>Monthly</span>
           <label className="relative inline-flex items-center cursor-pointer">
             <input
               type="checkbox"
@@ -134,8 +134,8 @@ export default function PricingPage() {
             <div className="w-14 h-7 bg-gray-700 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-blue-500 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[4px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-6 after:w-6 after:transition-all peer-checked:bg-blue-600"></div>
           </label>
           <span className={`font-medium flex items-center gap-2 ${isYearly ? 'text-white' : 'text-gray-400'}`}>
-            年付
-            <span className="bg-green-500 text-white text-xs px-2 py-1 rounded-full">省 20%</span>
+            Yearly
+            <span className="bg-green-500 text-white text-xs px-2 py-1 rounded-full">Save 20%</span>
           </span>
         </div>
 
@@ -168,7 +168,7 @@ export default function PricingPage() {
 
                 <div className="mb-6">
                   <span className="text-5xl font-bold text-white">
-                    ¥{currentPrice(plan)}
+                    ${currentPrice(plan)}
                   </span>
                   <span className={plan.featured ? 'text-gray-300' : 'text-gray-400'}>
                     {period}
@@ -266,14 +266,14 @@ export default function PricingPage() {
                           const result = await response.json()
 
                           if (result.success) {
-                            alert('🎉 订阅成功！\n感谢您的支持，现在可以畅享所有功能了！')
+                            alert('🎉 Subscription successful!\nThank you for your support!')
                             router.push('/')
                           } else {
                             throw new Error(result.error || 'Approval failed')
                           }
                         } catch (error) {
                           console.error('Approve error:', error)
-                          alert('支付处理失败，请联系客服')
+                          alert('Payment processing failed. Please contact support.')
                         } finally {
                           setIsProcessing(false)
                           setSelectedPlan(null)
@@ -281,7 +281,7 @@ export default function PricingPage() {
                       }}
                       onError={(err) => {
                         console.error('PayPal error:', err)
-                        alert('支付失败，请重试或联系客服')
+                        alert('Payment failed. Please try again or contact support.')
                         setIsProcessing(false)
                         setSelectedPlan(null)
                       }}
@@ -306,7 +306,7 @@ export default function PricingPage() {
 
                 {plan.yearlyPrice > 0 && selectedPlan !== plan.key && (
                   <p className="text-center text-gray-400 text-xs mt-3">
-                    年付仅需 ¥{plan.yearlyPrice}，省¥{plan.monthlyPrice * 12 - plan.yearlyPrice}
+                    Yearly: ${plan.yearlyPrice} (Save ${(plan.monthlyPrice * 12 - plan.yearlyPrice).toFixed(2)})
                   </p>
                 )}
               </div>
@@ -317,12 +317,12 @@ export default function PricingPage() {
         {/* Feature Comparison Table */}
         <div className="max-w-6xl mx-auto px-4 pb-16">
           <div className="bg-gray-800 rounded-2xl p-8 border border-gray-700">
-            <h2 className="text-3xl font-bold text-white text-center mb-8">功能详细对比</h2>
+            <h2 className="text-3xl font-bold text-white text-center mb-8">Feature Comparison</h2>
             <div className="overflow-x-auto">
               <table className="w-full">
                 <thead>
                   <tr className="border-b border-gray-700">
-                    <th className="text-left py-4 px-4 text-gray-400 font-medium">功能</th>
+                    <th className="text-left py-4 px-4 text-gray-400 font-medium">Feature</th>
                     <th className="text-center py-4 px-4 text-white font-medium">Free</th>
                     <th className="text-center py-4 px-4 text-blue-400 font-medium">Pro</th>
                     <th className="text-center py-4 px-4 text-purple-400 font-medium">Premium</th>
@@ -330,7 +330,7 @@ export default function PricingPage() {
                 </thead>
                 <tbody className="text-gray-300">
                   <tr className="border-b border-gray-700">
-                    <td className="py-4 px-4">当前世界排名</td>
+                    <td className="py-4 px-4">Current World Rankings</td>
                     <td className="text-center py-4 px-4">
                       <span className="text-green-500">✓</span>
                     </td>
@@ -342,7 +342,7 @@ export default function PricingPage() {
                     </td>
                   </tr>
                   <tr className="border-b border-gray-700">
-                    <td className="py-4 px-4">实时数据</td>
+                    <td className="py-4 px-4">Real-time Data</td>
                     <td className="text-center py-4 px-4">
                       <span className="text-gray-600">✗</span>
                     </td>
@@ -354,15 +354,15 @@ export default function PricingPage() {
                     </td>
                   </tr>
                   <tr className="border-b border-gray-700">
-                    <td className="py-4 px-4">历史数据</td>
+                    <td className="py-4 px-4">Historical Data</td>
                     <td className="text-center py-4 px-4">
                       <span className="text-gray-600">✗</span>
                     </td>
-                    <td className="text-center py-4 px-4">5 年</td>
-                    <td className="text-center py-4 px-4">全部</td>
+                    <td className="text-center py-4 px-4">5 Years</td>
+                    <td className="text-center py-4 px-4">Unlimited</td>
                   </tr>
                   <tr className="border-b border-gray-700">
-                    <td className="py-4 px-4">球员对比</td>
+                    <td className="py-4 px-4">Player Comparison</td>
                     <td className="text-center py-4 px-4">
                       <span className="text-gray-600">✗</span>
                     </td>
@@ -374,7 +374,7 @@ export default function PricingPage() {
                     </td>
                   </tr>
                   <tr className="border-b border-gray-700">
-                    <td className="py-4 px-4">高级统计</td>
+                    <td className="py-4 px-4">Advanced Analytics</td>
                     <td className="text-center py-4 px-4">
                       <span className="text-gray-600">✗</span>
                     </td>
@@ -386,7 +386,7 @@ export default function PricingPage() {
                     </td>
                   </tr>
                   <tr className="border-b border-gray-700">
-                    <td className="py-4 px-4">预测模型</td>
+                    <td className="py-4 px-4">Prediction Models</td>
                     <td className="text-center py-4 px-4">
                       <span className="text-gray-600">✗</span>
                     </td>
@@ -398,7 +398,7 @@ export default function PricingPage() {
                     </td>
                   </tr>
                   <tr className="border-b border-gray-700">
-                    <td className="py-4 px-4">数据导出</td>
+                    <td className="py-4 px-4">Data Export</td>
                     <td className="text-center py-4 px-4">
                       <span className="text-gray-600">✗</span>
                     </td>
@@ -410,7 +410,7 @@ export default function PricingPage() {
                     </td>
                   </tr>
                   <tr className="border-b border-gray-700">
-                    <td className="py-4 px-4">API 访问</td>
+                    <td className="py-4 px-4">API Access</td>
                     <td className="text-center py-4 px-4">
                       <span className="text-gray-600">✗</span>
                     </td>
@@ -420,17 +420,17 @@ export default function PricingPage() {
                     <td className="text-center py-4 px-4">500 次/月</td>
                   </tr>
                   <tr className="border-b border-gray-700">
-                    <td className="py-4 px-4">广告</td>
-                    <td className="text-center py-4 px-4">有</td>
+                    <td className="py-4 px-4">Ads</td>
+                    <td className="text-center py-4 px-4">Yes</td>
                     <td className="text-center py-4 px-4">
-                      <span className="text-green-500">无</span>
+                      <span className="text-green-500">No</span>
                     </td>
                     <td className="text-center py-4 px-4">
-                      <span className="text-green-500">无</span>
+                      <span className="text-green-500">No</span>
                     </td>
                   </tr>
                   <tr>
-                    <td className="py-4 px-4">同时登录设备</td>
+                    <td className="py-4 px-4">Simultaneous Devices</td>
                     <td className="text-center py-4 px-4">1</td>
                     <td className="text-center py-4 px-4">2</td>
                     <td className="text-center py-4 px-4">3</td>
@@ -443,49 +443,49 @@ export default function PricingPage() {
 
         {/* FAQ Section */}
         <div className="max-w-4xl mx-auto px-4 pb-16">
-          <h2 className="text-3xl font-bold text-white text-center mb-8">常见问题</h2>
+          <h2 className="text-3xl font-bold text-white text-center mb-8">FAQ</h2>
           <div className="space-y-4">
             <FAQItem
-              question="如何取消订阅？"
-              answer="随时可以在个人中心的订阅管理页面取消订阅。取消后，当前周期结束前仍可正常使用所有功能。"
+              question="How do I cancel my subscription?"
+              answer="You can cancel anytime in your account settings. Your subscription will remain active until the end of the current billing period."
             />
             <FAQItem
-              question="支持退款吗？"
-              answer="订阅后 7 天内如不满意可申请全额退款。请联系客服邮箱 support@snooker-ranking.com"
+              question="Do you offer refunds?"
+              answer="Full refund available within 7 days of purchase. Contact us at support@snooker-ranking.com"
             />
             <FAQItem
-              question="可以升级或降级套餐吗？"
-              answer="可以随时升级套餐，差价按比例计算。降级将在当前周期结束后生效。"
+              question="Can I upgrade or downgrade my plan?"
+              answer="You can upgrade anytime with prorated pricing. Downgrades will take effect at the end of the current billing period."
             />
             <FAQItem
-              question="支持哪些支付方式？"
-              answer="目前支持 PayPal、信用卡（Visa/Mastercard/Amex）。后续将支持微信支付和支付宝。"
+              question="What payment methods do you accept?"
+              answer="We accept PayPal and all major credit cards (Visa, Mastercard, Amex). More payment methods coming soon."
             />
             <FAQItem
-              question="学生有优惠吗？"
-              answer="是的！学生认证后可享受 Pro 套餐半价优惠（¥99/年）。请使用 edu 邮箱或上传学生证进行验证。"
+              question="Do you offer student discounts?"
+              answer="Yes! Students get 50% off Pro plan ($14.99/year). Please verify with your .edu email or student ID."
             />
           </div>
         </div>
 
         {/* Footer CTA */}
         <div className="max-w-4xl mx-auto px-4 pb-16 text-center">
-          <h3 className="text-2xl font-bold text-white mb-4">准备好开始了吗？</h3>
-          <p className="text-gray-300 mb-8">加入数千名斯诺克爱好者的行列，获取最全面的数据分析</p>
+          <h3 className="text-2xl font-bold text-white mb-4">Ready to Get Started?</h3>
+          <p className="text-gray-300 mb-8">Join thousands of snooker fans and get access to comprehensive data analytics</p>
           <button
             onClick={() => handlePlanSelect('pro')}
             className="inline-block py-3 px-8 bg-blue-500 text-white rounded-lg font-medium hover:bg-blue-600 transition-colors"
           >
-            免费试用 7 天
+            Start 7-Day Free Trial
           </button>
-          <p className="text-gray-400 text-sm mt-4">支持 PayPal 和信用卡支付 · 随时取消</p>
+          <p className="text-gray-400 text-sm mt-4">PayPal & Credit Cards Accepted · Cancel Anytime</p>
         </div>
 
         {/* Footer */}
         <footer className="bg-snooker-green/50 border-t border-white/10 py-6">
           <div className="container mx-auto px-4 text-center text-gray-400">
             <p className="mt-2 text-sm">
-              Built with Next.js + Tailwind CSS | Deployed on Cloudflare Pages
+              Built with Next.js + Tailwind CSS | Deployed on Cloudflare
             </p>
           </div>
         </footer>
