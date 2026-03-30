@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 import { PayPalScriptProvider, PayPalButtons } from '@paypal/react-paypal-js'
@@ -12,6 +12,55 @@ export default function PricingPage() {
   const [isYearly, setIsYearly] = useState(true) // 默认年付
   const [selectedPlan, setSelectedPlan] = useState<string | null>(null)
   const [isProcessing, setIsProcessing] = useState(false)
+  const [paypalConfig, setPaypalConfig] = useState<{
+    clientId: string
+    currency: string
+    intent: 'capture' | 'authorize'
+  } | null>(null)
+  const [paypalConfigLoading, setPaypalConfigLoading] = useState(true)
+  const [paypalConfigError, setPaypalConfigError] = useState<string | null>(null)
+
+  useEffect(() => {
+    let cancelled = false
+
+    const loadPaypalConfig = async () => {
+      try {
+        setPaypalConfigLoading(true)
+        setPaypalConfigError(null)
+
+        const response = await fetch('/api/paypal/config')
+        const data = await response.json()
+
+        if (!response.ok) {
+          throw new Error(data?.error || 'Failed to load PayPal config')
+        }
+        if (!data?.clientId) {
+          throw new Error('PayPal client id missing')
+        }
+
+        if (!cancelled) {
+          setPaypalConfig({
+            clientId: data.clientId,
+            currency: data.currency || 'USD',
+            intent: data.intent === 'authorize' ? 'authorize' : 'capture',
+          })
+        }
+      } catch (error) {
+        if (!cancelled) {
+          setPaypalConfigError(error instanceof Error ? error.message : 'Failed to load PayPal config')
+        }
+      } finally {
+        if (!cancelled) {
+          setPaypalConfigLoading(false)
+        }
+      }
+    }
+
+    void loadPaypalConfig()
+    return () => {
+      cancelled = true
+    }
+  }, [])
 
   const plans = [
     {
@@ -81,17 +130,8 @@ export default function PricingPage() {
 
   const period = isYearly ? '/year' : '/month'
 
-  console.log(process.env)
-
   return (
-    <PayPalScriptProvider
-      options={{
-        clientId: process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID!,
-        currency: 'USD',
-        intent: 'capture',
-      }}
-    >
-      <main className="min-h-screen bg-gradient-to-b from-snooker-green to-gray-900">
+    <main className="min-h-screen bg-gradient-to-b from-snooker-green to-gray-900">
         {/* Header */}
         <header className="bg-snooker-green border-b border-snooker-gold/30">
           <div className="container mx-auto px-4 py-8">
@@ -228,70 +268,89 @@ export default function PricingPage() {
                     <div className="text-center text-gray-300 text-sm">
                       {plan.name} - {isYearly ? '年付' : '月付'}
                     </div>
-                    <PayPalButtons
-                      style={{ layout: 'vertical' }}
-                      createOrder={async () => {
-                        setIsProcessing(true)
-                        try {
-                          const response = await fetch('/api/subscription', {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify({
-                              plan: plan.key,
-                              billingCycle: isYearly ? 'yearly' : 'monthly',
-                            }),
-                          })
+                    {paypalConfigLoading ? (
+                      <div className="rounded-lg border border-gray-600 bg-gray-700/40 px-4 py-3 text-center text-sm text-gray-300">
+                        Loading PayPal...
+                      </div>
+                    ) : paypalConfigError || !paypalConfig ? (
+                      <div className="rounded-lg border border-red-600/40 bg-red-900/20 px-4 py-3 text-center text-sm text-red-200">
+                        PayPal unavailable: {paypalConfigError || 'invalid config'}
+                      </div>
+                    ) : (
+                      <PayPalScriptProvider
+                        options={{
+                          'client-id': paypalConfig.clientId,
+                          currency: paypalConfig.currency,
+                          intent: paypalConfig.intent,
+                          components: 'buttons',
+                        }}
+                      >
+                        <PayPalButtons
+                          style={{ layout: 'vertical' }}
+                          createOrder={async () => {
+                            setIsProcessing(true)
+                            try {
+                              const response = await fetch('/api/subscription', {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({
+                                  plan: plan.key,
+                                  billingCycle: isYearly ? 'yearly' : 'monthly',
+                                }),
+                              })
 
-                          if (!response.ok) {
-                            throw new Error('Failed to create order')
-                          }
+                              if (!response.ok) {
+                                throw new Error('Failed to create order')
+                              }
 
-                          const data = await response.json()
-                          return data.orderID
-                        } catch (error) {
-                          console.error('Create order error:', error)
-                          throw error
-                        }
-                      }}
-                      onApprove={async (data) => {
-                        try {
-                          const response = await fetch('/api/subscription/approve', {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify({
-                              orderID: data.orderID,
-                              plan: plan.key,
-                              billingCycle: isYearly ? 'yearly' : 'monthly',
-                            }),
-                          })
+                              const data = await response.json()
+                              return data.orderID
+                            } catch (error) {
+                              console.error('Create order error:', error)
+                              throw error
+                            }
+                          }}
+                          onApprove={async (data) => {
+                            try {
+                              const response = await fetch('/api/subscription/approve', {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({
+                                  orderID: data.orderID,
+                                  plan: plan.key,
+                                  billingCycle: isYearly ? 'yearly' : 'monthly',
+                                }),
+                              })
 
-                          const result = await response.json()
+                              const result = await response.json()
 
-                          if (result.success) {
-                            alert('🎉 Subscription successful!\nThank you for your support!')
-                            router.push('/')
-                          } else {
-                            throw new Error(result.error || 'Approval failed')
-                          }
-                        } catch (error) {
-                          console.error('Approve error:', error)
-                          alert('Payment processing failed. Please contact support.')
-                        } finally {
-                          setIsProcessing(false)
-                          setSelectedPlan(null)
-                        }
-                      }}
-                      onError={(err) => {
-                        console.error('PayPal error:', err)
-                        alert('Payment failed. Please try again or contact support.')
-                        setIsProcessing(false)
-                        setSelectedPlan(null)
-                      }}
-                      onCancel={() => {
-                        setIsProcessing(false)
-                        setSelectedPlan(null)
-                      }}
-                    />
+                              if (result.success) {
+                                alert('🎉 Subscription successful!\nThank you for your support!')
+                                router.push('/')
+                              } else {
+                                throw new Error(result.error || 'Approval failed')
+                              }
+                            } catch (error) {
+                              console.error('Approve error:', error)
+                              alert('Payment processing failed. Please contact support.')
+                            } finally {
+                              setIsProcessing(false)
+                              setSelectedPlan(null)
+                            }
+                          }}
+                          onError={(err) => {
+                            console.error('PayPal error:', err)
+                            alert('Payment failed. Please try again or contact support.')
+                            setIsProcessing(false)
+                            setSelectedPlan(null)
+                          }}
+                          onCancel={() => {
+                            setIsProcessing(false)
+                            setSelectedPlan(null)
+                          }}
+                        />
+                      </PayPalScriptProvider>
+                    )}
                   </div>
                 ) : (
                   <button
@@ -498,8 +557,7 @@ export default function PricingPage() {
             box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
           }
         `}</style>
-      </main>
-    </PayPalScriptProvider>
+    </main>
   )
 }
 

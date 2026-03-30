@@ -9,7 +9,7 @@ const PAYPAL_BASE_URL = process.env.PAYPAL_MODE === 'live'
  * 获取 PayPal Access Token
  */
 async function getPayPalAccessToken() {
-  const clientId = process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID
+  const clientId = process.env.PAYPAL_CLIENT_ID || process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID
   const secret = process.env.PAYPAL_CLIENT_SECRET
 
   if (!clientId || !secret) {
