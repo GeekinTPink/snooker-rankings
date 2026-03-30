@@ -81,6 +81,10 @@ export default function PricingPage() {
 
   const period = isYearly ? '/year' : '/month'
 
+  console.log(process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID)
+  console.log(process.env.PAYPAL_CLIENT_SECRET)
+  console.log(process.env)
+
   return (
     <PayPalScriptProvider
       options={{
