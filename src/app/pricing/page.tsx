@@ -279,7 +279,7 @@ export default function PricingPage() {
                     ) : (
                       <PayPalScriptProvider
                         options={{
-                          'client-id': paypalConfig.clientId,
+                          clientId: paypalConfig.clientId,
                           currency: paypalConfig.currency,
                           intent: paypalConfig.intent,
                           components: 'buttons',
