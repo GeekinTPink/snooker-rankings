@@ -103,6 +103,13 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
      */
     authorized({ auth, request }) {
       const { pathname } = request.nextUrl
+
+      // ============================
+      // 👇 必须加这一行！！！放行登录流程
+      // ============================
+      if (pathname.startsWith("/api/auth")) {
+        return true;
+      }
       
       // 登录页面：已登录用户重定向到首页
       if (pathname === "/login") {
