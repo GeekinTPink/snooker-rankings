@@ -19,6 +19,10 @@ export async function GET() {
     
     // 从 D1 获取用户详细信息
     const db = getD1()
+    const debug = {
+      dbAvailable: !!db,
+      sessionUserId: session.user.id,
+    }
     
     if (db) {
       const user = await db.prepare(
@@ -27,6 +31,8 @@ export async function GET() {
       
       if (user) {
         return NextResponse.json({
+          ...debug,
+          dbUserFound: true,
           id: user.id,
           email: user.email,
           name: user.name,
@@ -40,6 +46,8 @@ export async function GET() {
     
     // 如果 D1 不可用，返回 session 中的信息
     return NextResponse.json({
+      ...debug,
+      dbUserFound: false,
       id: session.user.id,
       email: session.user.email,
       name: session.user.name,
