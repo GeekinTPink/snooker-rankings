@@ -35,18 +35,21 @@ async function getPayPalAccessToken() {
 
 /**
  * 验证 Webhook 事件（防止伪造请求）
+ * body 已在外部解析，作为参数传入，避免二次读取 Request stream
  */
-async function verifyWebhookEvent(request: Request): Promise<boolean> {
-  const accessToken = await getPayPalAccessToken()
+async function verifyWebhookEvent(
+  headers: Headers,
+  rawBody: string,
+  parsedBody: unknown
+): Promise<boolean> {
   const webhookId = process.env.PAYPAL_WEBHOOK_ID
 
   if (!webhookId) {
     console.warn('PAYPAL_WEBHOOK_ID not configured, skipping verification')
-    return true // 开发环境跳过验证
+    return true
   }
 
-  const body = await request.text()
-  const headers = request.headers
+  const accessToken = await getPayPalAccessToken()
 
   const response = await fetch(`${PAYPAL_BASE_URL}/v1/notifications/verify-webhook-signature`, {
     method: 'POST',
@@ -61,7 +64,7 @@ async function verifyWebhookEvent(request: Request): Promise<boolean> {
       transmission_sig: headers.get('PAYPAL-TRANSMISSION-SIG') || '',
       transmission_time: headers.get('PAYPAL-TRANSMISSION-TIME') || '',
       webhook_id: webhookId,
-      webhook_event: JSON.parse(body),
+      webhook_event: parsedBody,
     }),
   })
 
@@ -81,12 +84,14 @@ async function verifyWebhookEvent(request: Request): Promise<boolean> {
 export async function POST(request: Request) {
   try {
     const eventType = request.headers.get('PAYPAL-EVENT-TYPE')
-    const body = await request.json()
+    // 读取一次 body，同时保留原始字符串供签名验证使用
+    const rawBody = await request.text()
+    const body = JSON.parse(rawBody)
 
     console.log('[PayPal Webhook] Received event:', eventType, body.id)
 
     // 验证 Webhook 签名（生产环境必须）
-    const isValid = await verifyWebhookEvent(request)
+    const isValid = await verifyWebhookEvent(request.headers, rawBody, body)
     if (!isValid) {
       console.error('[PayPal Webhook] Invalid signature')
       return NextResponse.json(

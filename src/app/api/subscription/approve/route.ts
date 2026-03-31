@@ -60,7 +60,32 @@ export async function POST(request: Request) {
     }
     
     const db = getD1()
-    
+
+    // 在扣款前确认数据库可用，避免扣款后无法激活订阅
+    if (!db) {
+      console.error('Database not available, refusing to capture payment')
+      return NextResponse.json(
+        { error: 'Service temporarily unavailable, please try again later' },
+        { status: 503 }
+      )
+    }
+
+    // 从数据库获取价格（单位 USD）
+    const pricingPlan = await db.prepare(
+      'SELECT monthly_price, yearly_price FROM pricing_plans WHERE plan_key = ? AND is_active = 1'
+    ).bind(plan).first()
+
+    if (!pricingPlan) {
+      return NextResponse.json(
+        { error: 'Plan not found' },
+        { status: 404 }
+      )
+    }
+
+    const amountUSD: number = billingCycle === 'yearly'
+      ? (pricingPlan.yearly_price as number)
+      : (pricingPlan.monthly_price as number)
+
     // 获取 PayPal Access Token
     const accessToken = await getPayPalAccessToken()
     
@@ -93,87 +118,55 @@ export async function POST(request: Request) {
     }
     
     console.log('PayPal payment captured:', orderID)
-    
-    // 获取价格（如果数据库不可用，使用默认价格）
-    let amountCNY = 0
-    if (db) {
-      const pricingPlan = await db.prepare(
-        'SELECT monthly_price, yearly_price FROM pricing_plans WHERE plan_key = ? AND is_active = 1'
-      ).bind(plan).first()
-      
-      if (!pricingPlan) {
-        return NextResponse.json(
-          { error: 'Plan not found' },
-          { status: 404 }
-        )
-      }
-      
-      amountCNY = billingCycle === 'yearly' ? pricingPlan.yearly_price : pricingPlan.monthly_price
-    } else {
-      // 默认价格（fallback）
-      amountCNY = plan === 'premium' 
-        ? (billingCycle === 'yearly' ? 499 : 49)
-        : (billingCycle === 'yearly' ? 199 : 19)
-    }
-    
-    // 转换为 USD（用于数据库记录）
-    const amountUSD = (amountCNY / 7.2).toFixed(2)
-    
+
     // 计算周期
     const now = new Date()
     const currentPeriodStart = now.toISOString()
-    const currentPeriodEnd = new Date(
-      now.setFullYear(now.getFullYear() + (billingCycle === 'yearly' ? 1 : 0)) +
-      (billingCycle === 'monthly' ? 30 * 24 * 60 * 60 * 1000 : 365 * 24 * 60 * 60 * 1000)
-    ).toISOString()
+    const daysToAdd = billingCycle === 'yearly' ? 365 : 30
+    const currentPeriodEnd = new Date(now.getTime() + daysToAdd * 24 * 60 * 60 * 1000).toISOString()
     
     // 生成订阅 ID
     const subscriptionId = 'sub_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9)
-    
-    // 如果数据库可用，创建订阅记录和更新用户计划
-    if (db) {
-      try {
-        // 创建订阅记录
-        await db.prepare(`
-          INSERT INTO subscriptions (
-            id, user_id, plan_type, billing_cycle, amount, currency,
-            status, current_period_start, current_period_end,
-            payment_provider, payment_intent_id, paypal_subscription_id,
-            created_at, updated_at
-          ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-        `).bind(
-          subscriptionId,
-          session.user.id,
-          plan,
-          billingCycle,
-          amountUSD,
-          'USD',
-          'active',
-          currentPeriodStart,
-          currentPeriodEnd,
-          'paypal',
-          orderID,
-          orderID,
-          new Date().toISOString(),
-          new Date().toISOString()
-        ).run()
-        
-        // 更新用户计划
-        const planExpiresAt = new Date(
-          new Date().getTime() + (billingCycle === 'yearly' ? 365 : 30) * 24 * 60 * 60 * 1000
-        ).toISOString()
-        
-        await db.prepare(`
-          UPDATE users 
-          SET plan = ?, plan_expires_at = ?, updated_at = ?
-          WHERE id = ?
-        `).bind(plan, planExpiresAt, new Date().toISOString(), session.user.id).run()
-      } catch (dbError) {
-        console.error('Database error:', dbError)
-        // 数据库错误不影响支付成功的返回
-      }
+
+    // 创建订阅记录并更新用户计划
+    try {
+      await db.prepare(`
+        INSERT INTO subscriptions (
+          id, user_id, plan_type, billing_cycle, amount, currency,
+          status, current_period_start, current_period_end,
+          payment_provider, payment_intent_id, paypal_subscription_id,
+          created_at, updated_at
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      `).bind(
+        subscriptionId,
+        session.user.id,
+        plan,
+        billingCycle,
+        amountUSD,
+        'USD',
+        'active',
+        currentPeriodStart,
+        currentPeriodEnd,
+        'paypal',
+        orderID,
+        orderID,
+        new Date().toISOString(),
+        new Date().toISOString()
+      ).run()
+
+      await db.prepare(`
+        UPDATE users 
+        SET plan = ?, plan_expires_at = ?, updated_at = ?
+        WHERE id = ?
+      `).bind(plan, currentPeriodEnd, new Date().toISOString(), session.user.id).run()
+    } catch (dbError) {
+      console.error('Database write failed after PayPal capture:', orderID, dbError)
+      return NextResponse.json(
+        { error: 'Subscription activation failed, please contact support with your order ID: ' + orderID },
+        { status: 500 }
+      )
     }
-    
+
     return NextResponse.json({
       success: true,
       subscription: {

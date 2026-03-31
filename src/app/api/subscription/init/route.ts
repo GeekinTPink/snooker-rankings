@@ -64,18 +64,18 @@ export async function POST() {
         plan_name TEXT NOT NULL,
         monthly_price REAL DEFAULT 0,
         yearly_price REAL DEFAULT 0,
-        currency TEXT DEFAULT 'CNY',
+        currency TEXT DEFAULT 'USD',
         is_active INTEGER DEFAULT 1,
         created_at DATETIME DEFAULT CURRENT_TIMESTAMP
       )
     `)
     
-    // 插入默认数据
+    // 插入默认数据（与前端 pricing/page.tsx 显示价格保持一致，单位 USD）
     await db.exec(`
       INSERT OR IGNORE INTO pricing_plans (plan_key, plan_name, monthly_price, yearly_price, currency, is_active) VALUES
-      ('free', 'Free', 0, 0, 'CNY', 1),
-      ('pro', 'Pro', 19, 199, 'CNY', 1),
-      ('premium', 'Premium', 49, 499, 'CNY', 1)
+      ('free', 'Free', 0, 0, 'USD', 1),
+      ('pro', 'Pro', 2.99, 29.99, 'USD', 1),
+      ('premium', 'Premium', 6.99, 69.99, 'USD', 1)
     `)
     
     return NextResponse.json({

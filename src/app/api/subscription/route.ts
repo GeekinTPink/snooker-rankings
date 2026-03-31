@@ -160,8 +160,13 @@ export async function POST(request: Request) {
     
     const db = getD1()
     
-    // 如果数据库不可用，使用默认价格
-    let amount = 0
+    // 获取价格（单位 USD），数据库不可用时使用与前端一致的 fallback
+    const FALLBACK_PRICES: Record<string, { monthly: number; yearly: number }> = {
+      pro:     { monthly: 2.99,  yearly: 29.99 },
+      premium: { monthly: 6.99,  yearly: 69.99 },
+    }
+
+    let amountUSD = 0
     if (db) {
       const pricingPlan = await db.prepare(
         'SELECT monthly_price, yearly_price FROM pricing_plans WHERE plan_key = ? AND is_active = 1'
@@ -174,12 +179,10 @@ export async function POST(request: Request) {
         )
       }
       
-      amount = billingCycle === 'yearly' ? pricingPlan.yearly_price : pricingPlan.monthly_price
+      amountUSD = billingCycle === 'yearly' ? (pricingPlan.yearly_price as number) : (pricingPlan.monthly_price as number)
     } else {
-      // 默认价格（fallback）
-      amount = plan === 'premium' 
-        ? (billingCycle === 'yearly' ? 499 : 49)
-        : (billingCycle === 'yearly' ? 199 : 19)
+      const fallback = FALLBACK_PRICES[plan]
+      amountUSD = billingCycle === 'yearly' ? fallback.yearly : fallback.monthly
     }
     
     // 获取 PayPal Access Token
@@ -198,7 +201,7 @@ export async function POST(request: Request) {
           {
             amount: {
               currency_code: 'USD',
-              value: (amount / 7.2).toFixed(2), // CNY 转 USD（近似汇率）
+              value: amountUSD.toFixed(2),
             },
             description: `Snooker Rankings ${plan.toUpperCase()} - ${billingCycle === 'yearly' ? 'Yearly' : 'Monthly'}`,
           },
@@ -218,7 +221,7 @@ export async function POST(request: Request) {
       orderID: orderData.id,
       plan,
       billingCycle,
-      amount,
+      amount: amountUSD,
       currency: 'USD',
     })
   } catch (error) {
