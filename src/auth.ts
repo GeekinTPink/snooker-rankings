@@ -57,22 +57,30 @@ async function upsertUser(db: any, user: {
   image: string | null
   email_verified: string | null
 }) {
-  await db.prepare(`
-    INSERT INTO users (id, email, name, image, email_verified, updated_at)
-    VALUES (?, ?, ?, ?, ?, datetime('now'))
-    ON CONFLICT(id) DO UPDATE SET
-      email = excluded.email,
-      name = excluded.name,
-      image = excluded.image,
-      email_verified = excluded.email_verified,
-      updated_at = datetime('now')
-  `).run(
-    user.id,
-    user.email,
-    user.name,
-    user.image,
-    user.email_verified
-  )
+  async function upsertUser(db: any, user: {
+    id: string
+    email: string
+    name: string | null
+    image: string | null
+    email_verified: string | null
+  }) {
+    await db.prepare(`
+      INSERT INTO users (id, email, name, image, email_verified, updated_at)
+      VALUES (?, ?, ?, ?, ?, datetime('now'))
+      ON CONFLICT(id) DO UPDATE SET
+        email = excluded.email,
+        name = excluded.name,
+        image = excluded.image,
+        email_verified = excluded.email_verified,
+        updated_at = datetime('now')
+    `).bind(
+      user.id,
+      user.email,
+      user.name ?? "",
+      user.image ?? "",
+      user.email_verified ?? null
+    ).run();
+  }
 }
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
