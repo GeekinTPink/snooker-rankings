@@ -3,30 +3,45 @@ import { auth } from '@/auth'
 import { getD1 } from '@/lib/d1'
 
 /**
+ * 安全地给已有表添加列——SQLite 不支持 ALTER TABLE ADD COLUMN IF NOT EXISTS，
+ * 用 PRAGMA table_info 检查后再决定是否执行。
+ */
+async function addColumnIfMissing(
+  db: any,
+  table: string,
+  column: string,
+  definition: string
+): Promise<boolean> {
+  const info = await db.prepare(`PRAGMA table_info(${table})`).all()
+  const exists = (info.results ?? info).some((c: any) => c.name === column)
+  if (!exists) {
+    await db.exec(`ALTER TABLE ${table} ADD COLUMN ${column} ${definition}`)
+    return true
+  }
+  return false
+}
+
+/**
  * POST /api/subscription/init
- * 初始化数据库表（临时接口，部署后调用一次即可）
+ * 初始化/迁移数据库表（幂等，可重复调用）
  */
 export async function POST() {
   try {
     const session = await auth()
-    
+
     if (!session?.user) {
-      return NextResponse.json(
-        { error: 'Unauthorized' },
-        { status: 401 }
-      )
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
-    
+
     const db = getD1()
-    
+
     if (!db) {
-      return NextResponse.json(
-        { error: 'Database not available' },
-        { status: 500 }
-      )
+      return NextResponse.json({ error: 'Database not available' }, { status: 500 })
     }
-    
-    // 创建订阅表
+
+    const migrations: string[] = []
+
+    // ── 1. subscriptions 表 ──────────────────────────────────────────────
     await db.exec(`
       CREATE TABLE IF NOT EXISTS subscriptions (
         id TEXT PRIMARY KEY,
@@ -34,7 +49,7 @@ export async function POST() {
         plan_type TEXT NOT NULL,
         billing_cycle TEXT NOT NULL,
         amount REAL NOT NULL,
-        currency TEXT DEFAULT 'CNY',
+        currency TEXT DEFAULT 'USD',
         status TEXT DEFAULT 'active',
         current_period_start DATETIME NOT NULL,
         current_period_end DATETIME NOT NULL,
@@ -47,16 +62,11 @@ export async function POST() {
         FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
       )
     `)
-    
-    // 创建索引
-    await db.exec(`
-      CREATE INDEX IF NOT EXISTS idx_subscriptions_user ON subscriptions(user_id)
-    `)
-    await db.exec(`
-      CREATE INDEX IF NOT EXISTS idx_subscriptions_status ON subscriptions(status)
-    `)
-    
-    // 创建定价配置表
+    await db.exec(`CREATE INDEX IF NOT EXISTS idx_subscriptions_user   ON subscriptions(user_id)`)
+    await db.exec(`CREATE INDEX IF NOT EXISTS idx_subscriptions_status ON subscriptions(status)`)
+    migrations.push('subscriptions table ensured')
+
+    // ── 2. pricing_plans 表 ──────────────────────────────────────────────
     await db.exec(`
       CREATE TABLE IF NOT EXISTS pricing_plans (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -69,19 +79,34 @@ export async function POST() {
         created_at DATETIME DEFAULT CURRENT_TIMESTAMP
       )
     `)
-    
-    // 插入默认数据（与前端 pricing/page.tsx 显示价格保持一致，单位 USD）
+
+    // upsert 价格（覆盖历史 CNY 数据）
     await db.exec(`
-      INSERT OR IGNORE INTO pricing_plans (plan_key, plan_name, monthly_price, yearly_price, currency, is_active) VALUES
-      ('free', 'Free', 0, 0, 'USD', 1),
-      ('pro', 'Pro', 2.99, 29.99, 'USD', 1),
-      ('premium', 'Premium', 6.99, 69.99, 'USD', 1)
+      INSERT INTO pricing_plans (plan_key, plan_name, monthly_price, yearly_price, currency, is_active)
+      VALUES
+        ('free',    'Free',    0,    0,     'USD', 1),
+        ('pro',     'Pro',     2.99, 29.99, 'USD', 1),
+        ('premium', 'Premium', 6.99, 69.99, 'USD', 1)
+      ON CONFLICT(plan_key) DO UPDATE SET
+        monthly_price = excluded.monthly_price,
+        yearly_price  = excluded.yearly_price,
+        currency      = excluded.currency,
+        is_active     = excluded.is_active
     `)
-    
-    return NextResponse.json({
-      success: true,
-      message: 'Database tables initialized successfully'
-    })
+    migrations.push('pricing_plans table ensured (prices upserted to USD)')
+
+    // ── 3. users 表——补充订阅相关列（NextAuth 默认不含这些列）───────────
+    const planAdded         = await addColumnIfMissing(db, 'users', 'plan',           "TEXT NOT NULL DEFAULT 'free'")
+    const expiresAdded      = await addColumnIfMissing(db, 'users', 'plan_expires_at', 'DATETIME')
+    const trialAdded        = await addColumnIfMissing(db, 'users', 'trial_ends_at',   'DATETIME')
+    const updatedAtAdded    = await addColumnIfMissing(db, 'users', 'updated_at',      'DATETIME')
+
+    if (planAdded)      migrations.push('users.plan column added')
+    if (expiresAdded)   migrations.push('users.plan_expires_at column added')
+    if (trialAdded)     migrations.push('users.trial_ends_at column added')
+    if (updatedAtAdded) migrations.push('users.updated_at column added')
+
+    return NextResponse.json({ success: true, migrations })
   } catch (error) {
     console.error('Init error:', error)
     return NextResponse.json(
@@ -93,42 +118,43 @@ export async function POST() {
 
 /**
  * GET /api/subscription/init
- * 检查数据库表是否已初始化
+ * 检查当前数据库状态（表是否存在、users 列是否齐全）
  */
 export async function GET() {
   try {
     const session = await auth()
-    
+
     if (!session?.user) {
-      return NextResponse.json(
-        { error: 'Unauthorized' },
-        { status: 401 }
-      )
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
-    
+
     const db = getD1()
-    
+
     if (!db) {
-      return NextResponse.json({
-        initialized: false,
-        error: 'Database not available'
-      })
+      return NextResponse.json({ initialized: false, error: 'Database not available' })
     }
-    
-    // 检查表是否存在
+
     const tables = await db.prepare(`
       SELECT name FROM sqlite_master WHERE type='table' AND name IN ('subscriptions', 'pricing_plans')
     `).all()
-    
+
+    const userCols = await db.prepare(`PRAGMA table_info(users)`).all()
+    const colNames: string[] = (userCols.results ?? userCols).map((c: any) => c.name)
+    const usersMigrated =
+      colNames.includes('plan') &&
+      colNames.includes('plan_expires_at') &&
+      colNames.includes('trial_ends_at')
+
+    const tableNames = (tables.results ?? tables).map((t: any) => t.name)
+
     return NextResponse.json({
-      initialized: tables.length === 2,
-      tables: tables
+      initialized: tableNames.length === 2 && usersMigrated,
+      tables: tableNames,
+      usersMigrated,
+      usersColumns: colNames,
     })
   } catch (error) {
     console.error('Check error:', error)
-    return NextResponse.json({
-      initialized: false,
-      error: String(error)
-    })
+    return NextResponse.json({ initialized: false, error: String(error) })
   }
 }
