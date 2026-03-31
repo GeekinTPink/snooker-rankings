@@ -8,7 +8,8 @@ export default function LoginPage() {
 
   const handleSignIn = async () => {
     setLoading(true)
-    await signIn('google', { callbackUrl: '/' })
+    const res = await signIn('google', { callbackUrl: '/' })
+    console.warn(res);
   }
 
   return (

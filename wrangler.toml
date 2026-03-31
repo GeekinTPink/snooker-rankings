@@ -33,3 +33,8 @@ NEXT_PUBLIC_PAYPAL_CLIENT_ID = "AQR_stQAkE2X007Q1-pqgMKjT9G1VgP44EFBW-2FhJxwIoFF
 # 若使用 Next 图片优化，参见 https://opennext.js.org/cloudflare/howtos/image
 # [images]
 # binding = "IMAGES"
+
+[observability]
+[observability.logs]
+enabled = true
+invocation_logs = true
