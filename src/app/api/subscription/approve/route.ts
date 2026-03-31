@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server'
 import { auth } from '@/auth'
+import { getD1 } from '@/lib/d1'
 
 const PAYPAL_BASE_URL = process.env.PAYPAL_MODE === 'live'
   ? 'https://api-m.paypal.com'
@@ -58,7 +59,7 @@ export async function POST(request: Request) {
       )
     }
     
-    const db = (globalThis as any).DB
+    const db = getD1()
     
     // 获取 PayPal Access Token
     const accessToken = await getPayPalAccessToken()

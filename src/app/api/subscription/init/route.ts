@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server'
 import { auth } from '@/auth'
+import { getD1 } from '@/lib/d1'
 
 /**
  * POST /api/subscription/init
@@ -16,7 +17,7 @@ export async function POST() {
       )
     }
     
-    const db = (globalThis as any).DB
+    const db = getD1()
     
     if (!db) {
       return NextResponse.json(
@@ -105,7 +106,7 @@ export async function GET() {
       )
     }
     
-    const db = (globalThis as any).DB
+    const db = getD1()
     
     if (!db) {
       return NextResponse.json({

@@ -1,6 +1,7 @@
 import NextAuth from "next-auth"
 import Google from "next-auth/providers/google"
 import { NextResponse } from "next/server"
+import { getD1 } from "@/lib/d1"
 
 /** 会话与 JWT 有效期（秒），到期后需重新登录 */
 const SESSION_MAX_AGE = 60 * 60 * 24 * 7 // 7 天
@@ -158,8 +159,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     async signIn({ user, account }) {
       if (account?.provider === "google" && user.email) {
         try {
-          // 获取 D1 数据库绑定（在 Workers 环境中可用）
-          const db = (globalThis as any).DB
+          const db = getD1()
           
           if (db && user.id) {
             // 初始化表
@@ -175,6 +175,11 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
             })
             
             console.log(`User stored in D1: ${user.email}`)
+          } else {
+            console.warn("Skip D1 upsert: missing DB binding or user.id", {
+              hasDB: !!db,
+              hasUserId: !!user.id,
+            })
           }
         } catch (error) {
           console.error('Error storing user in D1:', error)

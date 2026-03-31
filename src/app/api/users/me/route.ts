@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server'
 import { auth } from '@/auth'
+import { getD1 } from '@/lib/d1'
 
 /**
  * GET /api/users/me
@@ -17,7 +18,7 @@ export async function GET() {
     }
     
     // 从 D1 获取用户详细信息
-    const db = (globalThis as any).DB
+    const db = getD1()
     
     if (db) {
       const user = await db.prepare(

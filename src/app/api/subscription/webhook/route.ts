@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server'
+import { getD1 } from '@/lib/d1'
 
 const PAYPAL_BASE_URL = process.env.PAYPAL_MODE === 'live'
   ? 'https://api-m.paypal.com'
@@ -94,7 +95,7 @@ export async function POST(request: Request) {
       )
     }
 
-    const db = (globalThis as any).DB
+    const db = getD1()
 
     // 根据事件类型处理
     switch (eventType) {

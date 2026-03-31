@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server'
 import { auth } from '@/auth'
+import { getD1 } from '@/lib/d1'
 
 const PAYPAL_BASE_URL = process.env.PAYPAL_MODE === 'live'
   ? 'https://api-m.paypal.com'
@@ -48,7 +49,7 @@ export async function GET() {
       )
     }
     
-    const db = (globalThis as any).DB
+    const db = getD1()
     
     if (!db) {
       return NextResponse.json({
@@ -157,7 +158,7 @@ export async function POST(request: Request) {
       )
     }
     
-    const db = (globalThis as any).DB
+    const db = getD1()
     
     // 如果数据库不可用，使用默认价格
     let amount = 0
