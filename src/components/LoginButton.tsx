@@ -62,7 +62,7 @@ export default function LoginButton() {
                 {getPlanDisplayName(subscription.plan)}
               </span>
               {subscription.status === 'expired' && (
-                <span className="text-xs text-red-400">已过期</span>
+                <span className="text-xs text-red-400">Expired</span>
               )}
             </div>
           )}
