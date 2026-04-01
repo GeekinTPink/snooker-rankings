@@ -60,30 +60,32 @@ export default function Home() {
   }
 
   return (
-    <main className="min-h-screen bg-gradient-to-b from-snooker-green to-gray-900">
+    <main className="min-h-screen bg-gradient-to-br from-gray-900 via-snooker-green to-gray-900">
       {/* Header */}
-      <header className="bg-snooker-green border-b border-snooker-gold/30">
-        <div className="container mx-auto px-4 py-8">
-          <div className="flex justify-between items-center mb-4">
-            <h1 className="text-4xl md:text-5xl font-bold text-white">
-              🎱 World Snooker Rankings 2026
-            </h1>
+      <header className="relative bg-gradient-to-r from-snooker-green/80 to-snooker-green/40 backdrop-blur-sm border-b border-snooker-gold/20">
+        <div className="container mx-auto px-4 py-10">
+          <div className="flex flex-col md:flex-row justify-between items-center gap-6">
+            <div className="text-center md:text-left">
+              <h1 className="text-4xl md:text-5xl font-bold text-white mb-2">
+                🎱 World Snooker Rankings 2026
+              </h1>
+              <p className="text-gray-300 text-lg">
+                Live snooker world rankings - Updated {formatDate(metadata.lastUpdated)}
+              </p>
+            </div>
             <div className="flex items-center gap-4">
               <button
                 onClick={() => router.push('/pricing')}
-                className="px-4 py-2 bg-snooker-gold text-snooker-green rounded-lg font-medium hover:bg-yellow-400 transition-colors flex items-center gap-2"
+                className="group px-6 py-3 bg-gradient-to-r from-snooker-gold to-yellow-500 text-snooker-green rounded-xl font-semibold hover:from-yellow-400 hover:to-yellow-500 transition-all shadow-lg shadow-yellow-500/20 flex items-center gap-2"
               >
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-5 h-5 transform group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
                 </svg>
-                套餐权益
+                <span>Pricing Plans</span>
               </button>
               <LoginButton />
             </div>
           </div>
-          <p className="text-gray-300 text-center text-lg">
-            Live snooker world rankings - Updated {formatDate(metadata.lastUpdated)}
-          </p>
         </div>
       </header>
 
