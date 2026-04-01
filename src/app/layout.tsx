@@ -6,9 +6,10 @@ import Providers from '@/components/Providers'
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: 'World Snooker Rankings 2026 - Live Snooker Rankings',
-  description: 'Track the latest world snooker rankings for 2026. View player rankings, points, tournament results, and ranking history.',
-  keywords: 'snooker rankings, world snooker rankings 2026, snooker players, snooker points, snooker tournament',
+  title: 'World Snooker Rankings — WST snapshot',
+  description:
+    'World Snooker Tour–style rankings table: player order, countries, and points (sourced from Wikipedia season pages; refreshed via build).',
+  keywords: 'snooker rankings, world snooker rankings, snooker players, snooker points, WST',
 }
 
 export default function RootLayout({

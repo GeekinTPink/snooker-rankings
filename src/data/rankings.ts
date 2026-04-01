@@ -1,6 +1,5 @@
-// 斯诺克排名数据
-// 数据来源：https://www.snooker.org/res/index.asp?template=31
-// 每日凌晨 3 点 UTC 自动更新
+// 斯诺克排名数据 — 由 scripts/scrape-rankings.py 从英文维基赛季页同步（种子表或奖金表）
+// 更新后需重新 build / 部署；可在 CI 或 cron 中运行该脚本。
 
 import rankingsData from './rankings-data.json'
 

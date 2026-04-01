@@ -4,21 +4,20 @@ import { useState, useEffect } from 'react'
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 import { players, metadata } from '../data/rankings'
-import LoginButton from '@/components/LoginButton'
+import SiteHeader from '@/components/SiteHeader'
+import type { Player } from '../data/rankings'
 
 export default function Home() {
   const { data: session, status } = useSession()
   const router = useRouter()
   const [searchTerm, setSearchTerm] = useState('')
-  
-  // 检查登录状态，未登录重定向到登录页
+
   useEffect(() => {
     if (status === 'unauthenticated') {
       router.push('/login')
     }
   }, [status, router])
-  
-  // 加载中或已登录才显示内容
+
   if (status === 'loading') {
     return (
       <main className="min-h-screen bg-gradient-to-b from-snooker-green to-gray-900 flex items-center justify-center">
@@ -26,15 +25,15 @@ export default function Home() {
       </main>
     )
   }
-  
-  // 未登录时不渲染内容（会被重定向）
+
   if (!session) {
     return null
   }
 
-  const filteredPlayers = players.filter(player =>
-    player.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    player.country.toLowerCase().includes(searchTerm.toLowerCase())
+  const filteredPlayers = players.filter(
+    (player) =>
+      player.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      player.country.toLowerCase().includes(searchTerm.toLowerCase())
   )
 
   const getTrendIcon = (trend: string) => {
@@ -44,118 +43,168 @@ export default function Home() {
   }
 
   const getTrendColor = (trend: string) => {
-    if (trend === 'up') return 'text-green-600'
-    if (trend === 'down') return 'text-red-600'
+    if (trend === 'up') return 'text-emerald-400'
+    if (trend === 'down') return 'text-red-400'
     return 'text-gray-400'
   }
 
-  // 格式化日期显示
   const formatDate = (isoString: string) => {
     const date = new Date(isoString)
-    return date.toLocaleDateString('en-US', { 
-      year: 'numeric', 
-      month: 'long', 
-      day: 'numeric' 
+    return date.toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
     })
   }
 
-  return (
-    <main className="min-h-screen bg-gradient-to-br from-gray-900 via-snooker-green to-gray-900">
-      {/* Header */}
-      <header className="relative bg-gradient-to-r from-snooker-green/80 to-snooker-green/40 backdrop-blur-sm border-b border-snooker-gold/20">
-        <div className="container mx-auto px-4 py-10">
-          <div className="flex flex-col md:flex-row justify-between items-center gap-6">
-            <div className="text-center md:text-left">
-              <h1 className="text-4xl md:text-5xl font-bold text-white mb-2">
-                🎱 World Snooker Rankings 2026
-              </h1>
-              <p className="text-gray-300 text-lg">
-                Live snooker world rankings - Updated {formatDate(metadata.lastUpdated)}
-              </p>
-            </div>
-            <div className="flex items-center gap-4">
-              <button
-                onClick={() => router.push('/pricing')}
-                className="group px-6 py-3 bg-gradient-to-r from-snooker-gold to-yellow-500 text-snooker-green rounded-xl font-semibold hover:from-yellow-400 hover:to-yellow-500 transition-all shadow-lg shadow-yellow-500/20 flex items-center gap-2"
-              >
-                <svg className="w-5 h-5 transform group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
-                </svg>
-                <span>Pricing Plans</span>
-              </button>
-              <LoginButton />
-            </div>
-          </div>
-        </div>
-      </header>
+  const subtitle = `World Tour snapshot · ${metadata.playerCount} players · Updated ${formatDate(metadata.lastUpdated)}`
 
-      {/* Search */}
-      <div className="container mx-auto px-4 py-6">
-        <div className="max-w-md mx-auto">
+  return (
+    <main className="min-h-screen bg-gradient-to-br from-gray-950 via-snooker-green/95 to-gray-950">
+      <SiteHeader
+        title="World Snooker Rankings"
+        subtitle={subtitle}
+        showPricingLink
+      />
+
+      <div className="container mx-auto px-4 py-6 max-w-6xl">
+        <p className="text-center text-gray-400 text-sm mb-6 max-w-2xl mx-auto leading-relaxed">
+          Source: {metadata.source}
+        </p>
+
+        <div className="max-w-md mx-auto mb-8">
+          <label htmlFor="player-search" className="sr-only">
+            Search players
+          </label>
           <input
-            type="text"
-            placeholder="Search player or country..."
+            id="player-search"
+            type="search"
+            placeholder="Search by player or country…"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full px-4 py-3 rounded-lg bg-white/10 border border-white/20 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-snooker-gold"
+            className="w-full px-4 py-3 rounded-xl bg-white/10 border border-white/15 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-snooker-gold/80 focus:border-transparent"
           />
         </div>
-      </div>
 
-      {/* Rankings Table */}
-      <div className="container mx-auto px-4 pb-12">
-        <div className="bg-white/5 backdrop-blur-sm rounded-xl overflow-hidden border border-white/10">
+        {/* Desktop table */}
+        <div className="hidden md:block bg-white/5 backdrop-blur-sm rounded-2xl overflow-hidden border border-white/10 shadow-xl shadow-black/20">
           <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead className="bg-snooker-green/80">
+            <table className="w-full text-left">
+              <thead className="bg-snooker-green/90 border-b border-snooker-gold/20">
                 <tr>
-                  <th className="px-6 py-4 text-left text-white font-semibold">Rank</th>
-                  <th className="px-6 py-4 text-left text-white font-semibold">Player</th>
-                  <th className="px-6 py-4 text-left text-white font-semibold">Country</th>
-                  <th className="px-6 py-4 text-right text-white font-semibold">Points</th>
-                  <th className="px-6 py-4 text-center text-white font-semibold">Trend</th>
+                  <th scope="col" className="px-4 lg:px-6 py-4 text-snooker-gold font-semibold w-24">
+                    Rank
+                  </th>
+                  <th scope="col" className="px-4 lg:px-6 py-4 text-white font-semibold">
+                    Player
+                  </th>
+                  <th scope="col" className="px-4 lg:px-6 py-4 text-white font-semibold">
+                    Country
+                  </th>
+                  <th scope="col" className="px-4 lg:px-6 py-4 text-right text-white font-semibold">
+                    Points
+                  </th>
+                  <th scope="col" className="px-4 lg:px-6 py-4 text-center text-white font-semibold w-24">
+                    Trend
+                  </th>
                 </tr>
               </thead>
               <tbody>
                 {filteredPlayers.map((player, index) => (
-                  <tr 
-                    key={player.rank}
-                    className={`border-t border-white/10 hover:bg-white/10 transition-colors ${
-                      index % 2 === 0 ? 'bg-transparent' : 'bg-white/5'
-                    }`}
-                  >
-                    <td className="px-6 py-4 text-white font-bold text-lg">
-                      {player.rank === 1 ? '🥇' : player.rank === 2 ? '🥈' : player.rank === 3 ? '🥉' : ''} {player.rank}
-                    </td>
-                    <td className="px-6 py-4 text-white font-medium">{player.name}</td>
-                    <td className="px-6 py-4 text-gray-300">{player.country}</td>
-                    <td className="px-6 py-4 text-right text-white font-mono">
-                      {player.points.toLocaleString()}
-                    </td>
-                    <td className={`px-6 py-4 text-center text-2xl ${getTrendColor(player.trend)}`}>
-                      {getTrendIcon(player.trend)}
-                    </td>
-                  </tr>
+                  <PlayerTableRow
+                    key={`${player.rank}-${player.name}`}
+                    player={player}
+                    index={index}
+                    getTrendColor={getTrendColor}
+                    getTrendIcon={getTrendIcon}
+                  />
                 ))}
               </tbody>
             </table>
           </div>
         </div>
 
+        {/* Mobile cards */}
+        <ul className="md:hidden space-y-3 pb-8">
+          {filteredPlayers.map((player) => (
+            <li
+              key={`${player.rank}-${player.name}`}
+              className="rounded-2xl border border-white/10 bg-white/5 backdrop-blur-sm p-4 shadow-lg shadow-black/10"
+            >
+              <div className="flex items-start justify-between gap-3">
+                <div className="min-w-0 flex-1">
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <span className="text-snooker-gold font-bold text-lg tabular-nums">#{player.rank}</span>
+                    {medalForRank(player.rank)}
+                    <span className="text-white font-semibold truncate">{player.name}</span>
+                  </div>
+                  <p className="text-gray-400 text-sm mt-1">{player.country}</p>
+                </div>
+                <div className="text-right shrink-0">
+                  <p className="text-white font-mono text-sm tabular-nums">{player.points.toLocaleString()}</p>
+                  <p className="text-xs text-gray-500 mt-0.5">points</p>
+                </div>
+              </div>
+              <div className={`mt-3 text-center text-xl ${getTrendColor(player.trend)}`} aria-label={`Trend ${player.trend}`}>
+                {getTrendIcon(player.trend)}
+              </div>
+            </li>
+          ))}
+        </ul>
+
         {filteredPlayers.length === 0 && (
-          <p className="text-center text-gray-400 mt-8">No players found matching "{searchTerm}"</p>
+          <p className="text-center text-gray-400 py-12">No players match &ldquo;{searchTerm}&rdquo;</p>
         )}
       </div>
 
-      {/* Footer */}
-      <footer className="bg-snooker-green/50 border-t border-white/10 py-6">
-        <div className="container mx-auto px-4 text-center text-gray-400">
-          <p>Data source: {metadata.source} | Updated: {formatDate(metadata.lastUpdated)}</p>
-          <p className="mt-2 text-sm">
-            Built with Next.js + Tailwind CSS | Deployed on Cloudflare Pages
-          </p>
+      <footer className="border-t border-white/10 bg-black/20 py-8 mt-auto">
+        <div className="container mx-auto px-4 text-center text-gray-500 text-sm max-w-3xl">
+          <p>{metadata.playerCount} players on file · Last build sync: {formatDate(metadata.lastUpdated)}</p>
+          <p className="mt-2 text-xs">Next.js · Tailwind · Cloudflare</p>
         </div>
       </footer>
     </main>
+  )
+}
+
+function medalForRank(rank: number) {
+  if (rank === 1) return <span aria-hidden>🥇</span>
+  if (rank === 2) return <span aria-hidden>🥈</span>
+  if (rank === 3) return <span aria-hidden>🥉</span>
+  return null
+}
+
+function PlayerTableRow({
+  player,
+  index,
+  getTrendColor,
+  getTrendIcon,
+}: {
+  player: Player
+  index: number
+  getTrendColor: (t: string) => string
+  getTrendIcon: (t: string) => string
+}) {
+  return (
+    <tr
+      className={`border-t border-white/10 hover:bg-white/5 transition-colors ${
+        index % 2 === 1 ? 'bg-white/[0.03]' : ''
+      }`}
+    >
+      <td className="px-4 lg:px-6 py-3.5 text-white font-bold tabular-nums">
+        <span className="inline-flex items-center gap-2">
+          {medalForRank(player.rank)}
+          {player.rank}
+        </span>
+      </td>
+      <td className="px-4 lg:px-6 py-3.5 text-white font-medium">{player.name}</td>
+      <td className="px-4 lg:px-6 py-3.5 text-gray-300">{player.country}</td>
+      <td className="px-4 lg:px-6 py-3.5 text-right text-white font-mono tabular-nums text-sm">
+        {player.points.toLocaleString()}
+      </td>
+      <td className={`px-4 lg:px-6 py-3.5 text-center text-xl ${getTrendColor(player.trend)}`}>
+        {getTrendIcon(player.trend)}
+      </td>
+    </tr>
   )
 }
