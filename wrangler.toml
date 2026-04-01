@@ -23,7 +23,9 @@ database_id = "1fc92714-3b16-4d5e-a90c-6bfcb8d68ea7"
 # 环境变量配置
 [vars]
 PAYPAL_MODE = "live"
-NEXT_PUBLIC_PAYPAL_CLIENT_ID = "AQR_stQAkE2X007Q1-pqgMKjT9G1VgP44EFBW-2FhJxwIoFF9gHB1bedOwdHPLLF869unxqX48pQIRhs"
+PAYPAL_CLIENT_ID = "AUQ5KDrY9gP2vs1LNLcaTOnwNVve4s-oASpwxOnZRepgIBaOXzw81KAAG43ak8GgQ_WAMK7XKydy9TEO"
+PAYPAL_CLIENT_SECRET = "EFeNW962ZUSXUuknVnqGUh-Jbr-RvH-b8xtAdXkQlesG8kYvycGrHhKQG4zagbzeivB8lxmiRFWNoM8S"
+NEXT_PUBLIC_PAYPAL_CLIENT_ID = "AUQ5KDrY9gP2vs1LNLcaTOnwNVve4s-oASpwxOnZRepgIBaOXzw81KAAG43ak8GgQ_WAMK7XKydy9TEO"
 
 # 若启用 R2 增量缓存，参见 https://opennext.js.org/cloudflare/caching
 # [[r2_buckets]]
