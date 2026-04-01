@@ -1,15 +1,22 @@
 #!/usr/bin/env python3
 """
-Fetch WST-style ranking list from English Wikipedia season pages.
-Prefers the "prize money / ranking points" sortable table when present;
-otherwise uses the final seeding revision column from the seeding table.
+Refresh src/data/rankings-data.json from (in order):
+
+  1. CSV file — pass --csv path or set env RANKINGS_CSV
+  2. snooker.org JSON API — set env SNOOKER_ORG_REQUESTED_BY (approved by webmaster@snooker.org)
+  3. English Wikipedia season pages (fallback)
+
+API docs: https://api.snooker.org/
 
 Requires: Python 3.9+ (stdlib only).
 """
 
 from __future__ import annotations
 
+import argparse
+import csv
 import json
+import os
 import re
 import shutil
 import urllib.error
@@ -24,7 +31,6 @@ OUTPUT_FILE = DATA_DIR / "rankings-data.json"
 BACKUP_DIR = DATA_DIR / "backups"
 BACKUP_DIR.mkdir(parents=True, exist_ok=True)
 
-# Newest season first. Missing pages are skipped until one resolves.
 WIKI_PAGES = [
     "2025–26 snooker world rankings",
     "2024–25 snooker world rankings",
@@ -68,27 +74,20 @@ COUNTRY_MAP = {
     "UAE": "United Arab Emirates",
 }
 
+HTTP_HEADERS_WIKI = {
+    "User-Agent": (
+        "Mozilla/5.0 (compatible; SnookerRankingsFetcher/1.0; +https://github.com/) Python-urllib"
+    ),
+    "Accept": "application/json",
+}
+
 
 def fetch_wikipedia_html(title: str) -> str | None:
     params = urllib.parse.urlencode(
-        {
-            "action": "parse",
-            "page": title,
-            "prop": "text",
-            "format": "json",
-        }
+        {"action": "parse", "page": title, "prop": "text", "format": "json"}
     )
     url = f"https://en.wikipedia.org/w/api.php?{params}"
-    req = urllib.request.Request(
-        url,
-        headers={
-            "User-Agent": (
-                "Mozilla/5.0 (compatible; SnookerRankingsFetcher/1.0; "
-                "+https://github.com/) Python-urllib"
-            ),
-            "Accept": "application/json",
-        },
-    )
+    req = urllib.request.Request(url, headers=HTTP_HEADERS_WIKI)
     try:
         with urllib.request.urlopen(req, timeout=30) as resp:
             data = json.load(resp)
@@ -233,7 +232,172 @@ def pick_players_from_html(html: str, page_title: str) -> tuple[list[dict], str]
     return None
 
 
-def load_rankings() -> tuple[list[dict], str, str]:
+def snooker_api_get(query: str, requested_by: str) -> list | None:
+    """query like ?t=20 or ?rt=MoneyRankings&s=2025"""
+    q = query if query.startswith("?") else f"?{query}"
+    url = f"https://api.snooker.org/{q}"
+    req = urllib.request.Request(
+        url,
+        headers={
+            "User-Agent": "Mozilla/5.0 (compatible; SnookerRankings/1.0) Python-urllib",
+            "Accept": "application/json",
+            "X-Requested-By": requested_by,
+        },
+    )
+    try:
+        with urllib.request.urlopen(req, timeout=45) as resp:
+            raw = resp.read().decode("utf-8", errors="replace")
+    except urllib.error.HTTPError as e:
+        body = e.read().decode("utf-8", errors="replace")[:500]
+        raise RuntimeError(f"snooker.org HTTP {e.code}: {body}") from e
+    except (urllib.error.URLError, TimeoutError) as e:
+        raise RuntimeError(f"snooker.org request failed: {e}") from e
+    try:
+        data = json.loads(raw)
+    except json.JSONDecodeError as e:
+        raise RuntimeError("snooker.org returned non-JSON") from e
+    if isinstance(data, dict) and data.get("message"):
+        raise RuntimeError(f"snooker.org: {data}")
+    return data if isinstance(data, list) else None
+
+
+def player_display_name(p: dict) -> str:
+    fn = (p.get("FirstName") or "").strip()
+    ln = (p.get("LastName") or "").strip()
+    if fn or ln:
+        return f"{fn} {ln}".strip()
+    return (p.get("ShortName") or "?").strip()
+
+
+def load_from_snooker_org(requested_by: str) -> tuple[list[dict], str]:
+    meta = snooker_api_get("?t=20", requested_by)
+    if not meta or not isinstance(meta, list) or not meta:
+        raise RuntimeError("snooker.org ?t=20 returned empty")
+    season = meta[0].get("CurrentSeason")
+    if season is None:
+        raise RuntimeError("snooker.org ?t=20 missing CurrentSeason")
+
+    players_raw = snooker_api_get(f"?t=10&st=p&s={season}", requested_by)
+    if not players_raw:
+        raise RuntimeError("snooker.org player list empty")
+
+    by_id: dict[int, dict] = {}
+    for p in players_raw:
+        if not isinstance(p, dict):
+            continue
+        pid = p.get("ID")
+        if isinstance(pid, int):
+            by_id[pid] = {
+                "name": player_display_name(p),
+                "country": (p.get("Nationality") or "—").strip() or "—",
+            }
+
+    def fetch_rankings(q: str) -> list:
+        r = snooker_api_get(q, requested_by)
+        return r if r else []
+
+    rankings = fetch_rankings(f"?rt=MoneyRankings&s={season}")
+    if len(rankings) < 32:
+        rankings = fetch_rankings("?rt=MoneyRankings")
+
+    if len(rankings) < 32:
+        raise RuntimeError("snooker.org MoneyRankings list too short or missing")
+
+    rows: list[dict] = []
+    for item in rankings:
+        if not isinstance(item, dict):
+            continue
+        pos = item.get("Position")
+        pid = item.get("PlayerID")
+        pts = item.get("Sum")
+        if not isinstance(pos, int) or not isinstance(pid, int):
+            continue
+        if not isinstance(pts, int):
+            pts = int(pts) if pts is not None else 0
+        info = by_id.get(pid)
+        if not info:
+            solo = snooker_api_get(f"?p={pid}", requested_by)
+            if solo and isinstance(solo, list) and solo and isinstance(solo[0], dict):
+                p0 = solo[0]
+                info = {
+                    "name": player_display_name(p0),
+                    "country": (p0.get("Nationality") or "—").strip() or "—",
+                }
+                by_id[pid] = info
+            else:
+                info = {"name": f"Player #{pid}", "country": "—"}
+        rows.append(
+            {
+                "rank": pos,
+                "name": info["name"],
+                "country": info["country"],
+                "points": pts,
+                "trend": "same",
+            }
+        )
+
+    rows.sort(key=lambda x: (x["rank"], -x["points"], x["name"]))
+    out = rows[:128]
+    for i, r in enumerate(out, start=1):
+        r["rank"] = i
+    src = (
+        f"snooker.org API — MoneyRankings, season {season}/{season + 1} "
+        f"(https://api.snooker.org/ — mention source per their terms)"
+    )
+    return out, src
+
+
+def _csv_field(row: dict[str, str], *aliases: str) -> str | None:
+    keys = {k.strip().lower(): v for k, v in row.items() if k}
+    for a in aliases:
+        al = a.lower()
+        if al in keys and keys[al].strip():
+            return keys[al].strip()
+    return None
+
+
+def load_from_csv(path: Path) -> tuple[list[dict], str]:
+    with path.open(newline="", encoding="utf-8-sig") as f:
+        reader = csv.DictReader(f)
+        if not reader.fieldnames:
+            raise RuntimeError("CSV has no header row")
+        players: list[dict] = []
+        for row in reader:
+            if not any((v or "").strip() for v in row.values()):
+                continue
+            rk = _csv_field(row, "rank", "rk", "position", "#", "pos")
+            name = _csv_field(row, "name", "player")
+            country = _csv_field(row, "country", "nationality", "nation")
+            pts = _csv_field(row, "points", "pts", "sum", "money")
+            if not rk or not name:
+                raise RuntimeError(f"CSV row missing rank or name: {row}")
+            try:
+                rank_i = int(re.sub(r"[^\d]", "", rk))
+            except ValueError as e:
+                raise RuntimeError(f"Bad rank in row: {row}") from e
+            try:
+                points_i = int(re.sub(r"[^\d-]", "", pts or "0"))
+            except ValueError:
+                points_i = 0
+            players.append(
+                {
+                    "rank": rank_i,
+                    "name": name.strip(),
+                    "country": (country or "—").strip(),
+                    "points": max(0, points_i),
+                    "trend": "same",
+                }
+            )
+    if len(players) < 8:
+        raise RuntimeError("CSV: need at least 8 data rows")
+    players.sort(key=lambda x: (x["rank"], x["name"]))
+    for i, p in enumerate(players[:128], start=1):
+        p["rank"] = i
+    src = f"CSV import — {path.name}"
+    return players[:128], src
+
+
+def load_from_wikipedia() -> tuple[list[dict], str, str]:
     for title in WIKI_PAGES:
         html = fetch_wikipedia_html(title)
         if not html:
@@ -243,6 +407,34 @@ def load_rankings() -> tuple[list[dict], str, str]:
             players, note = got
             return players, note, title
     raise RuntimeError("Could not load rankings from any configured Wikipedia page.")
+
+
+def resolve_rankings(csv_path: str | None) -> tuple[list[dict], str, str]:
+    """
+    Returns (players, source_string, kind) where kind is csv | snooker.org | wikipedia:<title>.
+    """
+    if csv_path:
+        p = Path(csv_path)
+        if not p.is_file():
+            raise FileNotFoundError(f"CSV not found: {p}")
+        players, src = load_from_csv(p)
+        return players, src, "csv"
+
+    env_csv = os.environ.get("RANKINGS_CSV", "").strip()
+    if env_csv:
+        p = Path(env_csv)
+        if not p.is_file():
+            raise FileNotFoundError(f"RANKINGS_CSV not found: {p}")
+        players, src = load_from_csv(p)
+        return players, src, "csv"
+
+    requested_by = os.environ.get("SNOOKER_ORG_REQUESTED_BY", "").strip()
+    if requested_by:
+        players, src = load_from_snooker_org(requested_by)
+        return players, src, "snooker.org"
+
+    players, src, title = load_from_wikipedia()
+    return players, src, f"wikipedia:{title}"
 
 
 def save_rankings(players: list[dict], source: str) -> None:
@@ -264,12 +456,28 @@ def save_rankings(players: list[dict], source: str) -> None:
 
 
 def main() -> None:
+    parser = argparse.ArgumentParser(description="Refresh snooker rankings JSON")
+    parser.add_argument(
+        "--csv",
+        metavar="FILE",
+        help="Import from CSV (columns: rank, name, country, points — aliases supported)",
+    )
+    args = parser.parse_args()
+
     print("=" * 60)
-    print("Snooker rankings (Wikipedia)")
+    print("Snooker rankings refresh")
     print(datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S UTC"))
     print("=" * 60)
-    players, source, title = load_rankings()
-    print(f"Page: {title}")
+
+    players, source, kind = resolve_rankings(args.csv)
+    if kind == "csv":
+        print("Mode: CSV import")
+        print(f"File: {args.csv or os.environ.get('RANKINGS_CSV')}")
+    elif kind == "snooker.org":
+        print("Mode: snooker.org API (MoneyRankings)")
+    else:
+        print(f"Mode: Wikipedia ({kind.removeprefix('wikipedia:')})")
+
     save_rankings(players, source)
     print("Done.")
 

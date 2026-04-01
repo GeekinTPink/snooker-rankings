@@ -1,5 +1,5 @@
-// 斯诺克排名数据 — 由 scripts/scrape-rankings.py 从英文维基赛季页同步（种子表或奖金表）
-// 更新后需重新 build / 部署；可在 CI 或 cron 中运行该脚本。
+// 斯诺克排名数据 — scripts/scrape-rankings.py 生成，优先级：--csv / RANKINGS_CSV →
+// SNOOKER_ORG_REQUESTED_BY（snooker.org API）→ 英文维基赛季页。更新后需重新 build / 部署。
 
 import rankingsData from './rankings-data.json'
 
