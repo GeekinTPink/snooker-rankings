@@ -95,7 +95,7 @@ export default function PricingPage() {
       ],
       cta: 'Start 7-Day Free Trial',
       featured: true,
-      badge: '最受欢迎 🔥',
+      badge: 'Most Popular 🔥',
     },
     {
       key: 'premium',
@@ -261,12 +261,12 @@ export default function PricingPage() {
 
                 {plan.key === 'free' ? (
                   <button className="w-full py-3 px-6 bg-gray-700 text-white rounded-lg font-medium hover:bg-gray-600 transition-colors">
-                    当前计划
+                    Current Plan
                   </button>
                 ) : selectedPlan === plan.key ? (
                   <div className="space-y-3">
                     <div className="text-center text-gray-300 text-sm">
-                      {plan.name} - {isYearly ? '年付' : '月付'}
+                      {plan.name} - {isYearly ? 'Yearly' : 'Monthly'}
                     </div>
                     {paypalConfigLoading ? (
                       <div className="rounded-lg border border-gray-600 bg-gray-700/40 px-4 py-3 text-center text-sm text-gray-300">
@@ -478,7 +478,7 @@ export default function PricingPage() {
                     <td className="text-center py-4 px-4">
                       <span className="text-gray-600">✗</span>
                     </td>
-                    <td className="text-center py-4 px-4">500 次/月</td>
+                    <td className="text-center py-4 px-4">500/month</td>
                   </tr>
                   <tr className="border-b border-gray-700">
                     <td className="py-4 px-4">Ads</td>
