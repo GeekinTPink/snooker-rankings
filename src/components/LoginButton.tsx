@@ -2,10 +2,53 @@
 
 import { signIn, signOut, useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
+import { useState, useEffect } from 'react'
+
+interface Subscription {
+  plan: string
+  status: string
+  currentPeriodEnd?: string
+  trialEndsAt?: string
+}
 
 export default function LoginButton() {
   const { data: session } = useSession()
   const router = useRouter()
+  const [subscription, setSubscription] = useState<Subscription | null>(null)
+
+  // 获取用户订阅信息
+  useEffect(() => {
+    if (session) {
+      fetch('/api/subscription')
+        .then(res => res.json())
+        .then(data => setSubscription(data))
+        .catch(err => console.error('Failed to fetch subscription:', err))
+    }
+  }, [session])
+
+  // 获取套餐显示名称
+  const getPlanDisplayName = (plan: string) => {
+    switch (plan) {
+      case 'premium':
+        return 'Premium'
+      case 'pro':
+        return 'Pro'
+      default:
+        return 'Free'
+    }
+  }
+
+  // 获取套餐颜色
+  const getPlanColor = (plan: string) => {
+    switch (plan) {
+      case 'premium':
+        return 'bg-purple-600'
+      case 'pro':
+        return 'bg-snooker-gold'
+      default:
+        return 'bg-gray-600'
+    }
+  }
 
   if (session) {
     return (
@@ -13,6 +56,16 @@ export default function LoginButton() {
         <div className="text-white text-sm">
           <p>Welcome, {session.user?.name}</p>
           <p className="text-gray-400 text-xs">{session.user?.email}</p>
+          {subscription && (
+            <div className="flex items-center gap-2 mt-1">
+              <span className={`px-2 py-0.5 rounded text-xs font-medium text-white ${getPlanColor(subscription.plan)}`}>
+                {getPlanDisplayName(subscription.plan)}
+              </span>
+              {subscription.status === 'expired' && (
+                <span className="text-xs text-red-400">已过期</span>
+              )}
+            </div>
+          )}
         </div>
         <button
           onClick={() => signOut({ callbackUrl: '/login' })}
