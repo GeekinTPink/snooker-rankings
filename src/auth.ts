@@ -50,13 +50,7 @@ async function initDB(db: any) {
 /**
  * 保存或更新用户信息
  */
-async function upsertUser(db: any, user: {
-  id: string
-  email: string
-  name: string | null
-  image: string | null
-  email_verified: string | null
-}) {
+
   async function upsertUser(db: any, user: {
     id: string
     email: string
@@ -80,7 +74,6 @@ async function upsertUser(db: any, user: {
       user.image ?? "",
       user.email_verified ?? null
     ).run();
-  }
 }
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
