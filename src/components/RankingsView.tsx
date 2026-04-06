@@ -63,6 +63,26 @@ export default function RankingsView() {
       />
 
       <div className="container mx-auto px-4 py-6 max-w-6xl">
+        <section className="mb-8 max-w-3xl mx-auto text-center" aria-labelledby="rankings-overview">
+          <h2 id="rankings-overview" className="text-xl md:text-2xl font-semibold text-white mb-3">
+            Official-style world rankings
+          </h2>
+          <p className="text-gray-400 text-sm leading-relaxed">
+            Browse the current world ranking order with prize-money style points. Visitors see the top{' '}
+            {PUBLIC_PREVIEW_COUNT} players; after Google sign-in you unlock ranks 1–{TOP_DISPLAY_COUNT}.
+          </p>
+        </section>
+
+        <section className="mb-8 max-w-3xl mx-auto" aria-labelledby="data-source-heading">
+          <h3 id="data-source-heading" className="text-lg font-semibold text-white mb-2 text-center md:text-left">
+            Data source and updates
+          </h3>
+          <p className="text-gray-400 text-sm leading-relaxed text-center md:text-left">
+            Numbers follow the WST Gamechanger published two-year world list (not Wikipedia). The table below
+            refreshes when the site data snapshot is updated—check the footer for the last sync date.
+          </p>
+        </section>
+
         {!showFull ? (
           <div
             className="mb-6 rounded-2xl border border-snooker-gold/30 bg-snooker-green/20 px-4 py-4 text-center text-sm text-gray-200 max-w-2xl mx-auto leading-relaxed"
@@ -79,9 +99,16 @@ export default function RankingsView() {
           </div>
         ) : null}
 
-        <p className="text-center text-gray-400 text-sm mb-6 max-w-2xl mx-auto leading-relaxed">
+        <p className="text-center text-gray-400 text-sm mb-4 max-w-2xl mx-auto leading-relaxed">
           Source: {metadata.source}
         </p>
+
+        <h3
+          id="rankings-table-heading"
+          className="text-lg font-semibold text-white mb-3 text-center md:text-left max-w-6xl mx-auto px-1"
+        >
+          Rankings table
+        </h3>
 
         <div className="max-w-md mx-auto mb-8">
           <label htmlFor="player-search" className="sr-only">

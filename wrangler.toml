@@ -21,6 +21,7 @@ database_name = "snooker-users-db"
 database_id = "1fc92714-3b16-4d5e-a90c-6bfcb8d68ea7"
 
 # 环境变量配置
+# SEO: set NEXT_PUBLIC_SITE_URL=https://your-domain.com for absolute canonical, sitemap.xml, and OG URLs.
 [vars]
 PAYPAL_MODE = "live"
 PAYPAL_CLIENT_ID = "AUQ5KDrY9gP2vs1LNLcaTOnwNVve4s-oASpwxOnZRepgIBaOXzw81KAAG43ak8GgQ_WAMK7XKydy9TEO"
