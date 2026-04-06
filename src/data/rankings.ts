@@ -1,7 +1,8 @@
-// 斯诺克排名数据 — scripts/scrape-rankings.py 生成，优先级：--csv / RANKINGS_CSV →
-// SNOOKER_ORG_REQUESTED_BY（snooker.org API）→ 英文维基赛季页。更新后需重新 build / 部署。
+// 斯诺克排名数据 — 从 WST 官网获取的实时数据
+// 数据来源: https://www.wst.tv/rankings/
 
 import rankingsData from './rankings-data.json'
+import wstRankingsData from './rankings-wst.json'
 
 export interface Player {
   rank: number
@@ -18,14 +19,35 @@ export interface RankingsData {
   players: Player[]
 }
 
-// 从本地 JSON 文件加载数据（由爬虫脚本每日更新）
-export const players: Player[] = rankingsData.players as Player[]
+// 优先使用 WST 实时数据，如果没有则使用本地 JSON 数据
+function getRankingsData() {
+  // 检查 WST 数据是否可用且较新（24小时内）
+  if (wstRankingsData?.players?.length > 0) {
+    const wstDate = new Date(wstRankingsData.lastUpdated)
+    const now = new Date()
+    const hoursDiff = (now.getTime() - wstDate.getTime()) / (1000 * 60 * 60)
+    
+    if (hoursDiff < 24) {
+      return wstRankingsData
+    }
+  }
+  
+  return rankingsData
+}
 
-// 数据元信息
+const activeData = getRankingsData()
+
+/** 前端只展示世界排名前 N 位（与 WST 职业赛 top 64 种子线一致） */
+export const TOP_DISPLAY_COUNT = 64
+
+const allPlayers = activeData.players as Player[]
+export const players: Player[] = allPlayers.slice(0, TOP_DISPLAY_COUNT)
+
+// 数据元信息（playerCount 与列表一致，为当前页展示人数）
 export const metadata = {
-  lastUpdated: rankingsData.lastUpdated,
-  source: rankingsData.source,
-  playerCount: rankingsData.playerCount
+  lastUpdated: activeData.lastUpdated,
+  source: activeData.source,
+  playerCount: players.length
 }
 
 // 获取所有排名（兼容旧 API）

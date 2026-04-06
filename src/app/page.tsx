@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react'
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
-import { players, metadata } from '../data/rankings'
+import { players, metadata, TOP_DISPLAY_COUNT } from '../data/rankings'
 import SiteHeader from '@/components/SiteHeader'
 import type { Player } from '../data/rankings'
 
@@ -57,7 +57,7 @@ export default function Home() {
     })
   }
 
-  const subtitle = `World Tour snapshot · ${metadata.playerCount} players · Updated ${formatDate(metadata.lastUpdated)}`
+  const subtitle = `World Tour · Top ${TOP_DISPLAY_COUNT} · Updated ${formatDate(metadata.lastUpdated)}`
 
   return (
     <main className="min-h-screen bg-gradient-to-br from-gray-950 via-snooker-green/95 to-gray-950">
@@ -159,7 +159,7 @@ export default function Home() {
 
       <footer className="border-t border-white/10 bg-black/20 py-8 mt-auto">
         <div className="container mx-auto px-4 text-center text-gray-500 text-sm max-w-3xl">
-          <p>{metadata.playerCount} players on file · Last build sync: {formatDate(metadata.lastUpdated)}</p>
+          <p>Showing top {TOP_DISPLAY_COUNT} · Last sync: {formatDate(metadata.lastUpdated)}</p>
           <p className="mt-2 text-xs">Next.js · Tailwind · Cloudflare</p>
         </div>
       </footer>
