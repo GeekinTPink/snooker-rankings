@@ -37,8 +37,11 @@ function getRankingsData() {
 
 const activeData = getRankingsData()
 
-/** 前端只展示世界排名前 N 位（与 WST 职业赛 top 64 种子线一致） */
+/** 登录用户可见的世界排名前 N 位（与 WST 职业赛 top 64 种子线一致） */
 export const TOP_DISPLAY_COUNT = 64
+
+/** 未登录访客可见条数（SEO 可索引的公开预览） */
+export const PUBLIC_PREVIEW_COUNT = 16
 
 const allPlayers = activeData.players as Player[]
 export const players: Player[] = allPlayers.slice(0, TOP_DISPLAY_COUNT)

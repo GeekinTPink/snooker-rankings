@@ -119,6 +119,11 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         }
         return true
       }
+
+      // 排名首页与 SEO 落地页：未登录也可访问（仅前端展示前 16 名）
+      if (pathname === "/" || pathname === "/rankings") {
+        return true
+      }
       
       // 公开页面：允许所有人访问
       if (PUBLIC_PATHS.some(path => pathname.startsWith(path))) {

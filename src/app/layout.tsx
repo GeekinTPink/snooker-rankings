@@ -5,11 +5,20 @@ import Providers from '@/components/Providers'
 
 const inter = Inter({ subsets: ['latin'] })
 
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || process.env.AUTH_URL
+const metadataBase =
+  siteUrl && /^https?:\/\//i.test(siteUrl) ? new URL(siteUrl) : undefined
+
 export const metadata: Metadata = {
-  title: 'World Snooker Rankings — WST snapshot',
+  ...(metadataBase ? { metadataBase } : {}),
+  title: {
+    default: 'World Snooker Rankings — WST-style world rankings',
+    template: '%s | World Snooker Rankings',
+  },
   description:
-    'World Snooker Tour–style rankings table: player order, countries, and points (sourced from Wikipedia season pages; refreshed via build).',
-  keywords: 'snooker rankings, world snooker rankings, snooker players, snooker points, WST',
+    'World snooker world rankings: top 16 free on the public page; sign in with Google for the full top 64, countries, and prize money. Data from the WST Gamechanger API.',
+  keywords:
+    'snooker rankings, world snooker rankings, WST, World Snooker Tour, snooker players, prize money rankings',
 }
 
 export default function RootLayout({

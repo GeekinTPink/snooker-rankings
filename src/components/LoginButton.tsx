@@ -1,7 +1,7 @@
 'use client'
 
 import { signIn, signOut, useSession } from 'next-auth/react'
-import { useRouter } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
 import { useState, useEffect } from 'react'
 
 interface Subscription {
@@ -14,6 +14,7 @@ interface Subscription {
 export default function LoginButton() {
   const { data: session } = useSession()
   const router = useRouter()
+  const pathname = usePathname()
   const [subscription, setSubscription] = useState<Subscription | null>(null)
 
   // 获取用户订阅信息
@@ -79,7 +80,9 @@ export default function LoginButton() {
 
   return (
     <button
-      onClick={() => signIn('google', { callbackUrl: '/' })}
+      onClick={() =>
+        signIn('google', { callbackUrl: pathname && pathname !== '/login' ? pathname : '/' })
+      }
       className="flex items-center gap-2 px-4 py-2 bg-white text-gray-800 rounded-lg hover:bg-gray-100 transition-colors text-sm font-medium"
     >
       <svg className="w-5 h-5" viewBox="0 0 24 24">

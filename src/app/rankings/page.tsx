@@ -1,5 +1,5 @@
 import RankingsView from '@/components/RankingsView'
 
-export default function Home() {
+export default function RankingsPage() {
   return <RankingsView />
 }
