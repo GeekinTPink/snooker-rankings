@@ -1,48 +1,48 @@
 {
-  "lastUpdated": "2026-04-06T14:32:32.320874+00:00",
-  "source": "WST Gamechanger API — World Rankings (World Ranking List before 2026 World Championship) — https://rankings.snooker.web.gc.wstservices.co.uk/v2",
+  "lastUpdated": "2026-04-06T14:45:50.180206+00:00",
+  "source": "WST Gamechanger API — World Rankings — World Rankings · prizeMoney · published (official revision) · World Ranking List after 2026 Tour Championship — https://rankings.snooker.web.gc.wstservices.co.uk/v2",
   "playerCount": 100,
   "players": [
     {
       "rank": 1,
       "name": "Judd Trump",
       "country": "England",
-      "points": 1625550,
+      "points": 1675550,
       "trend": "same"
     },
     {
       "rank": 2,
-      "name": "Neil Robertson",
-      "country": "Australia",
-      "points": 1160550,
+      "name": "Kyren Wilson",
+      "country": "England",
+      "points": 1367100,
       "trend": "same"
     },
     {
       "rank": 3,
+      "name": "Neil Robertson",
+      "country": "Australia",
+      "points": 1175550,
+      "trend": "same"
+    },
+    {
+      "rank": 4,
       "name": "Zhao Xintong",
       "country": "China",
       "points": 1126550,
       "trend": "same"
     },
     {
-      "rank": 4,
-      "name": "Mark Williams",
-      "country": "Wales",
-      "points": 873400,
-      "trend": "same"
-    },
-    {
       "rank": 5,
       "name": "John Higgins",
       "country": "Scotland",
-      "points": 868350,
+      "points": 918350,
       "trend": "same"
     },
     {
       "rank": 6,
-      "name": "Kyren Wilson",
-      "country": "England",
-      "points": 867100,
+      "name": "Mark Williams",
+      "country": "Wales",
+      "points": 873400,
       "trend": "same"
     },
     {
@@ -56,56 +56,56 @@
       "rank": 8,
       "name": "Shaun Murphy",
       "country": "England",
-      "points": 756800,
+      "points": 786800,
       "trend": "same"
     },
     {
       "rank": 9,
+      "name": "Xiao Guodong",
+      "country": "China",
+      "points": 643900,
+      "trend": "same"
+    },
+    {
+      "rank": 10,
+      "name": "Wu Yize",
+      "country": "China",
+      "points": 635900,
+      "trend": "same"
+    },
+    {
+      "rank": 11,
       "name": "Barry Hawkins",
       "country": "England",
       "points": 635350,
       "trend": "same"
     },
     {
-      "rank": 10,
-      "name": "Xiao Guodong",
-      "country": "China",
-      "points": 628900,
-      "trend": "same"
-    },
-    {
-      "rank": 11,
-      "name": "Wu Yize",
-      "country": "China",
-      "points": 620900,
-      "trend": "same"
-    },
-    {
       "rank": 12,
-      "name": "Chris Wakelin",
+      "name": "Ronnie O'Sullivan",
       "country": "England",
-      "points": 554200,
+      "points": 571250,
       "trend": "same"
     },
     {
       "rank": 13,
-      "name": "Ronnie O'Sullivan",
+      "name": "Chris Wakelin",
       "country": "England",
-      "points": 521250,
+      "points": 569200,
       "trend": "same"
     },
     {
       "rank": 14,
       "name": "Mark Allen",
       "country": "Northern Ireland",
-      "points": 487750,
+      "points": 517750,
       "trend": "same"
     },
     {
       "rank": 15,
       "name": "Si Jiahui",
       "country": "China",
-      "points": 439400,
+      "points": 469400,
       "trend": "same"
     },
     {
@@ -117,366 +117,366 @@
     },
     {
       "rank": 17,
-      "name": "Jack Lisowski",
+      "name": "Stuart Bingham",
       "country": "England",
-      "points": 380000,
+      "points": 427700,
       "trend": "same"
     },
     {
       "rank": 18,
+      "name": "Jack Lisowski",
+      "country": "England",
+      "points": 410000,
+      "trend": "same"
+    },
+    {
+      "rank": 19,
+      "name": "Jak Jones",
+      "country": "Wales",
+      "points": 398300,
+      "trend": "same"
+    },
+    {
+      "rank": 20,
       "name": "Thepchaiya Un-Nooh",
       "country": "Thailand",
       "points": 366600,
       "trend": "same"
     },
     {
-      "rank": 19,
+      "rank": 21,
       "name": "Elliot Slessor",
       "country": "England",
       "points": 351550,
       "trend": "same"
     },
     {
-      "rank": 20,
+      "rank": 22,
       "name": "Zhang Anda",
       "country": "China",
       "points": 330950,
       "trend": "same"
     },
     {
-      "rank": 21,
-      "name": "Stuart Bingham",
-      "country": "England",
-      "points": 327700,
-      "trend": "same"
-    },
-    {
-      "rank": 22,
+      "rank": 23,
       "name": "Ali Carter",
       "country": "England",
       "points": 310050,
       "trend": "same"
     },
     {
-      "rank": 23,
+      "rank": 24,
       "name": "Zhou Yuelong",
       "country": "China",
-      "points": 290250,
+      "points": 305250,
       "trend": "same"
     },
     {
-      "rank": 24,
+      "rank": 25,
+      "name": "David Gilbert",
+      "country": "England",
+      "points": 298700,
+      "trend": "same"
+    },
+    {
+      "rank": 26,
+      "name": "Stephen Maguire",
+      "country": "Scotland",
+      "points": 288950,
+      "trend": "same"
+    },
+    {
+      "rank": 27,
       "name": "Gary Wilson",
       "country": "England",
       "points": 286700,
       "trend": "same"
     },
     {
-      "rank": 25,
-      "name": "Pang Junxu",
-      "country": "China",
-      "points": 261900,
+      "rank": 28,
+      "name": "Joe O'Connor",
+      "country": "England",
+      "points": 282700,
       "trend": "same"
     },
     {
-      "rank": 26,
+      "rank": 29,
+      "name": "Pang Junxu",
+      "country": "China",
+      "points": 281900,
+      "trend": "same"
+    },
+    {
+      "rank": 30,
       "name": "Lei Peifan",
       "country": "China",
       "points": 261800,
       "trend": "same"
     },
     {
-      "rank": 27,
-      "name": "Joe O'Connor",
-      "country": "England",
-      "points": 252700,
-      "trend": "same"
-    },
-    {
-      "rank": 28,
-      "name": "Stephen Maguire",
-      "country": "Scotland",
-      "points": 238950,
-      "trend": "same"
-    },
-    {
-      "rank": 29,
+      "rank": 31,
       "name": "Yuan Sijun",
       "country": "China",
-      "points": 231300,
-      "trend": "same"
-    },
-    {
-      "rank": 30,
-      "name": "Jimmy Robertson",
-      "country": "England",
-      "points": 200700,
-      "trend": "same"
-    },
-    {
-      "rank": 31,
-      "name": "David Gilbert",
-      "country": "England",
-      "points": 198700,
+      "points": 246300,
       "trend": "same"
     },
     {
       "rank": 32,
-      "name": "Jak Jones",
-      "country": "Wales",
-      "points": 198300,
+      "name": "Hossein Vafaei",
+      "country": "Iran",
+      "points": 217600,
       "trend": "same"
     },
     {
       "rank": 33,
-      "name": "Hossein Vafaei",
-      "country": "Iran",
-      "points": 197600,
+      "name": "Tom Ford",
+      "country": "England",
+      "points": 217050,
       "trend": "same"
     },
     {
       "rank": 34,
-      "name": "Tom Ford",
+      "name": "Jimmy Robertson",
       "country": "England",
-      "points": 187050,
+      "points": 210700,
       "trend": "same"
     },
     {
       "rank": 35,
-      "name": "Xu Si",
-      "country": "China",
-      "points": 178500,
+      "name": "Ryan Day",
+      "country": "Wales",
+      "points": 198650,
       "trend": "same"
     },
     {
       "rank": 36,
       "name": "Jackson Page",
       "country": "Wales",
-      "points": 178250,
+      "points": 198250,
       "trend": "same"
     },
     {
       "rank": 37,
+      "name": "Matthew Selt",
+      "country": "England",
+      "points": 182000,
+      "trend": "same"
+    },
+    {
+      "rank": 38,
+      "name": "Xu Si",
+      "country": "China",
+      "points": 178500,
+      "trend": "same"
+    },
+    {
+      "rank": 39,
       "name": "Ben Woollaston",
       "country": "England",
       "points": 174000,
       "trend": "same"
     },
     {
-      "rank": 38,
-      "name": "Ryan Day",
-      "country": "Wales",
-      "points": 168650,
-      "trend": "same"
-    },
-    {
-      "rank": 39,
-      "name": "Matthew Selt",
-      "country": "England",
-      "points": 167000,
-      "trend": "same"
-    },
-    {
       "rank": 40,
+      "name": "Aaron Hill",
+      "country": "Ireland",
+      "points": 165950,
+      "trend": "same"
+    },
+    {
+      "rank": 41,
+      "name": "Daniel Wells",
+      "country": "Wales",
+      "points": 162300,
+      "trend": "same"
+    },
+    {
+      "rank": 42,
       "name": "Anthony McGill",
       "country": "Scotland",
       "points": 159850,
       "trend": "same"
     },
     {
-      "rank": 41,
-      "name": "Aaron Hill",
-      "country": "Ireland",
-      "points": 155950,
-      "trend": "same"
-    },
-    {
-      "rank": 42,
+      "rank": 43,
       "name": "Zak Surety",
       "country": "England",
       "points": 154050,
       "trend": "same"
     },
     {
-      "rank": 43,
+      "rank": 44,
       "name": "Stan Moody",
       "country": "England",
       "points": 152700,
       "trend": "same"
     },
     {
-      "rank": 44,
-      "name": "Daniel Wells",
-      "country": "Wales",
-      "points": 152300,
+      "rank": 45,
+      "name": "Noppon Saengkham",
+      "country": "Thailand",
+      "points": 151350,
       "trend": "same"
     },
     {
-      "rank": 45,
+      "rank": 46,
       "name": "Luca Brecel",
       "country": "Belgium",
       "points": 148400,
       "trend": "same"
     },
     {
-      "rank": 46,
-      "name": "Noppon Saengkham",
-      "country": "Thailand",
-      "points": 136350,
+      "rank": 47,
+      "name": "He Guoqiang",
+      "country": "China",
+      "points": 142650,
       "trend": "same"
     },
     {
-      "rank": 47,
+      "rank": 48,
+      "name": "Matthew Stevens",
+      "country": "Wales",
+      "points": 136450,
+      "trend": "same"
+    },
+    {
+      "rank": 49,
+      "name": "Scott Donaldson",
+      "country": "Scotland",
+      "points": 136100,
+      "trend": "same"
+    },
+    {
+      "rank": 50,
+      "name": "Long Zehuang",
+      "country": "China",
+      "points": 133450,
+      "trend": "same"
+    },
+    {
+      "rank": 51,
       "name": "Chang Bingyu",
       "country": "China",
       "points": 133100,
       "trend": "same"
     },
     {
-      "rank": 48,
-      "name": "Long Zehuang",
-      "country": "China",
-      "points": 128450,
+      "rank": 52,
+      "name": "Ricky Walden",
+      "country": "England",
+      "points": 132750,
       "trend": "same"
     },
     {
-      "rank": 49,
-      "name": "He Guoqiang",
-      "country": "China",
-      "points": 127650,
+      "rank": 53,
+      "name": "Robbie Williams",
+      "country": "England",
+      "points": 130950,
       "trend": "same"
     },
     {
-      "rank": 50,
+      "rank": 54,
+      "name": "Lyu Haotian",
+      "country": "China",
+      "points": 129350,
+      "trend": "same"
+    },
+    {
+      "rank": 55,
       "name": "Martin O'Donnell",
       "country": "England",
       "points": 124400,
       "trend": "same"
     },
     {
-      "rank": 51,
+      "rank": 56,
       "name": "Michael Holt",
       "country": "England",
       "points": 122350,
       "trend": "same"
     },
     {
-      "rank": 52,
-      "name": "Matthew Stevens",
-      "country": "Wales",
-      "points": 121450,
+      "rank": 57,
+      "name": "David Lilley",
+      "country": "England",
+      "points": 120950,
       "trend": "same"
     },
     {
-      "rank": 53,
-      "name": "Scott Donaldson",
-      "country": "Scotland",
-      "points": 121100,
-      "trend": "same"
-    },
-    {
-      "rank": 54,
+      "rank": 58,
       "name": "Oliver Lines",
       "country": "England",
       "points": 118200,
       "trend": "same"
     },
     {
-      "rank": 55,
-      "name": "Ricky Walden",
-      "country": "England",
-      "points": 112750,
-      "trend": "same"
-    },
-    {
-      "rank": 56,
-      "name": "Robbie Williams",
-      "country": "England",
-      "points": 110950,
-      "trend": "same"
-    },
-    {
-      "rank": 57,
-      "name": "David Lilley",
-      "country": "England",
-      "points": 110950,
-      "trend": "same"
-    },
-    {
-      "rank": 58,
-      "name": "Lyu Haotian",
-      "country": "China",
-      "points": 109350,
-      "trend": "same"
-    },
-    {
       "rank": 59,
       "name": "Liu Hongyu",
       "country": "China",
-      "points": 103700,
+      "points": 113700,
       "trend": "same"
     },
     {
       "rank": 60,
+      "name": "Jamie Jones",
+      "country": "Wales",
+      "points": 103400,
+      "trend": "same"
+    },
+    {
+      "rank": 61,
+      "name": "Robert Milkins",
+      "country": "England",
+      "points": 101500,
+      "trend": "same"
+    },
+    {
+      "rank": 62,
       "name": "Ishpreet Singh Chadha",
       "country": "India",
       "points": 100950,
       "trend": "same"
     },
     {
-      "rank": 61,
+      "rank": 63,
       "name": "Fan Zhengyi",
       "country": "China",
       "points": 100550,
       "trend": "same"
     },
     {
-      "rank": 62,
+      "rank": 64,
+      "name": "Mark Davis",
+      "country": "England",
+      "points": 96650,
+      "trend": "same"
+    },
+    {
+      "rank": 65,
+      "name": "Sanderson Lam",
+      "country": "England",
+      "points": 87200,
+      "trend": "same"
+    },
+    {
+      "rank": 66,
       "name": "Ben Mertens",
       "country": "Belgium",
       "points": 86450,
       "trend": "same"
     },
     {
-      "rank": 63,
+      "rank": 67,
       "name": "Jordan Brown",
       "country": "Northern Ireland",
       "points": 84600,
       "trend": "same"
     },
     {
-      "rank": 64,
-      "name": "Jamie Jones",
-      "country": "Wales",
-      "points": 83400,
-      "trend": "same"
-    },
-    {
-      "rank": 65,
-      "name": "Mark Davis",
-      "country": "England",
-      "points": 81650,
-      "trend": "same"
-    },
-    {
-      "rank": 66,
-      "name": "Sanderson Lam",
-      "country": "England",
-      "points": 77200,
-      "trend": "same"
-    },
-    {
-      "rank": 67,
+      "rank": 68,
       "name": "Artemijs Zizins",
       "country": "LVA",
       "points": 72250,
-      "trend": "same"
-    },
-    {
-      "rank": 68,
-      "name": "Robert Milkins",
-      "country": "England",
-      "points": 71500,
       "trend": "same"
     },
     {
@@ -530,44 +530,44 @@
     },
     {
       "rank": 76,
+      "name": "Graeme Dott",
+      "country": "Scotland",
+      "points": 61800,
+      "trend": "same"
+    },
+    {
+      "rank": 77,
       "name": "Sunny Akani",
       "country": "Thailand",
       "points": 58850,
       "trend": "same"
     },
     {
-      "rank": 77,
+      "rank": 78,
       "name": "Jiang Jun",
       "country": "China",
       "points": 57350,
       "trend": "same"
     },
     {
-      "rank": 78,
+      "rank": 79,
       "name": "Amir Sarkhosh",
       "country": "Iran",
       "points": 55650,
       "trend": "same"
     },
     {
-      "rank": 79,
+      "rank": 80,
       "name": "Liam Davies",
       "country": "Wales",
       "points": 54700,
       "trend": "same"
     },
     {
-      "rank": 80,
+      "rank": 81,
       "name": "Sam Craigie",
       "country": "England",
       "points": 53600,
-      "trend": "same"
-    },
-    {
-      "rank": 81,
-      "name": "Graeme Dott",
-      "country": "Scotland",
-      "points": 51800,
       "trend": "same"
     },
     {

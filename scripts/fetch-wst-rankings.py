@@ -1,12 +1,17 @@
 #!/usr/bin/env python3
 """
-Fetch live world rankings from WST Gamechanger API (same source as wst.tv/rankings).
+Fetch official WST world rankings from the Gamechanger API.
+
+The /v2 response contains multiple tables in `data[]`. This script uses the
+**published two-year World Rankings** (`rankingType: prizeMoney`, `live: false`),
+not the provisional rolling list (`livePrizeMoney`, `live: true`), so ordering
+matches WST's frozen revision (e.g. Kyren Wilson ahead of Neil Robertson).
 
 Writes:
   - src/data/rankings-wst.json  (primary / fresh snapshot for rankings.ts)
   - src/data/rankings-data.json (same payload as fallback when WST file is >24h old)
 
-API returns up to 100 positions per response (no public pagination found).
+API returns up to 100 positions per table (no public pagination found).
 
 Requires: Python 3.9+ (stdlib only).
 """
@@ -76,6 +81,42 @@ COUNTRY_MAP = {
 COUNTRY_CODE_REVERSE = {v: k for k, v in COUNTRY_MAP.items()}
 
 
+def pick_world_rankings_entry(rows: list) -> tuple[dict, str]:
+    """
+    Returns (attributes dict, selection_note).
+
+    Prefer official published list over live provisional totals.
+    """
+    if not rows:
+        raise SystemExit("Unexpected API response: empty data[]")
+
+    def attrs(item: dict) -> dict:
+        return item.get("attributes") or {}
+
+    official: list[tuple[dict, dict]] = []
+    live: list[tuple[dict, dict]] = []
+    for item in rows:
+        if not isinstance(item, dict):
+            continue
+        a = attrs(item)
+        if (a.get("name") or "").strip() != "World Rankings":
+            continue
+        rt = a.get("rankingType")
+        if rt == "prizeMoney" and a.get("live") is False:
+            official.append((item, a))
+        elif rt == "livePrizeMoney" and a.get("live") is True:
+            live.append((item, a))
+
+    if official:
+        _item, a = official[0]
+        return a, "World Rankings · prizeMoney · published (official revision)"
+    if live:
+        _item, a = live[0]
+        return a, "World Rankings · livePrizeMoney · provisional (fallback)"
+    a = attrs(rows[0])
+    return a, "first data[] entry (fallback)"
+
+
 def fetch_json(url: str) -> dict:
     req = urllib.request.Request(
         url,
@@ -94,7 +135,7 @@ def main() -> None:
     if not rows or not isinstance(rows[0], dict):
         raise SystemExit("Unexpected API response: missing data[]")
 
-    attr = rows[0].get("attributes") or {}
+    attr, pick_note = pick_world_rankings_entry(rows)
     positions = attr.get("positions") or []
     if len(positions) < 8:
         raise SystemExit("Too few ranking positions in API response")
@@ -102,8 +143,8 @@ def main() -> None:
     name_hint = (attr.get("name") or "World Rankings").strip()
     recalc = (attr.get("recalculateAfter") or "").strip()
     source = (
-        f"WST Gamechanger API — {name_hint}"
-        + (f" ({recalc})" if recalc else "")
+        f"WST Gamechanger API — {name_hint} — {pick_note}"
+        + (f" · {recalc}" if recalc else "")
         + f" — {API_URL}"
     )
 
