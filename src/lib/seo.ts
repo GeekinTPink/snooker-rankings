@@ -2,17 +2,19 @@
 
 export const SITE_NAME = 'World Snooker Rankings'
 
-export const DEFAULT_TITLE =
-  'World Snooker Rankings — WST world rankings (Gamechanger data)'
+/** ~45 chars — target 40–60 for SERP title display */
+export const DEFAULT_TITLE = 'World Snooker Rankings — Top 16 free, full 64'
 
+/** ~156 chars — target 140–160 for meta description snippets */
 export const DEFAULT_DESCRIPTION =
-  'Official-style World Snooker Tour world rankings: ranks 1–16 free without an account; sign in with Google for the full top 64, countries, and prize money. Data from the WST Gamechanger rankings API (published two-year list), not Wikipedia.'
+  'World snooker rankings: top 16 free; sign in for full top 64 with countries and prize money. WST Gamechanger two-year list. Updated snapshot; not Wikipedia.'
 
-export const RANKINGS_TITLE =
-  'World Snooker Rankings — Top 16 free, full top 64 with sign-in'
+/** ~41 chars */
+export const RANKINGS_TITLE = 'World Snooker Rankings — Top 16 & full 64'
 
+/** ~159 chars */
 export const RANKINGS_DESCRIPTION =
-  'WST Gamechanger world rankings: ranks 1–16 visible without an account. Sign in with Google for ranks 17–64 with prize money and countries. Same data source as the World Snooker Tour official-style published list (not Wikipedia).'
+  'WST world rankings: free top 16 here; Google sign-in for full top 64, countries & prize money. Gamechanger two-year list. Not Wikipedia—footer shows sync date.'
 
 export const KEYWORDS = [
   'snooker rankings',

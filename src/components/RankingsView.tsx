@@ -74,9 +74,9 @@ export default function RankingsView() {
         </section>
 
         <section className="mb-8 max-w-3xl mx-auto" aria-labelledby="data-source-heading">
-          <h3 id="data-source-heading" className="text-lg font-semibold text-white mb-2 text-center md:text-left">
+          <h2 id="data-source-heading" className="text-xl md:text-2xl font-semibold text-white mb-2 text-center md:text-left">
             Data source and updates
-          </h3>
+          </h2>
           <p className="text-gray-400 text-sm leading-relaxed text-center md:text-left">
             Numbers follow the WST Gamechanger published two-year world list (not Wikipedia). The table below
             refreshes when the site data snapshot is updated—check the footer for the last sync date.
@@ -84,33 +84,43 @@ export default function RankingsView() {
         </section>
 
         {!showFull ? (
-          <div
-            className="mb-6 rounded-2xl border border-snooker-gold/30 bg-snooker-green/20 px-4 py-4 text-center text-sm text-gray-200 max-w-2xl mx-auto leading-relaxed"
-            role="status"
+          <section
+            className="mb-6 max-w-2xl mx-auto"
+            aria-labelledby="preview-unlock-heading"
           >
-            <p>
-              You are viewing the <strong className="text-snooker-gold">top {PUBLIC_PREVIEW_COUNT}</strong>{' '}
-              players without signing in. Use <strong>Sign in with Google</strong> in the header (or{' '}
-              <Link href="/login" className="text-snooker-gold underline hover:text-amber-300">
-                open the login page
-              </Link>
-              ) to unlock ranks {PUBLIC_PREVIEW_COUNT + 1}–{TOP_DISPLAY_COUNT}.
-            </p>
-          </div>
+            <h2
+              id="preview-unlock-heading"
+              className="text-lg md:text-xl font-semibold text-white mb-3 text-center"
+            >
+              Unlock the full top {TOP_DISPLAY_COUNT}
+            </h2>
+            <div
+              className="rounded-2xl border border-snooker-gold/30 bg-snooker-green/20 px-4 py-4 text-center text-sm text-gray-200 leading-relaxed"
+              role="status"
+            >
+              <p>
+                You are viewing the <strong className="text-snooker-gold">top {PUBLIC_PREVIEW_COUNT}</strong>{' '}
+                players without signing in. Use <strong>Sign in with Google</strong> in the header (or{' '}
+                <Link href="/login" className="text-snooker-gold underline hover:text-amber-300">
+                  open the login page
+                </Link>
+                ) to unlock ranks {PUBLIC_PREVIEW_COUNT + 1}–{TOP_DISPLAY_COUNT}.
+              </p>
+            </div>
+          </section>
         ) : null}
 
         <p className="text-center text-gray-400 text-sm mb-4 max-w-2xl mx-auto leading-relaxed">
           Source: {metadata.source}
         </p>
 
-        <h3
-          id="rankings-table-heading"
-          className="text-lg font-semibold text-white mb-3 text-center md:text-left max-w-6xl mx-auto px-1"
-        >
-          Rankings table
-        </h3>
-
-        <div className="max-w-md mx-auto mb-8">
+        <section className="max-w-md mx-auto mb-6" aria-labelledby="search-players-heading">
+          <h2
+            id="search-players-heading"
+            className="text-xl md:text-2xl font-semibold text-white mb-3 text-center md:text-left"
+          >
+            Find a player
+          </h2>
           <label htmlFor="player-search" className="sr-only">
             Search players
           </label>
@@ -122,9 +132,17 @@ export default function RankingsView() {
             onChange={(e) => setSearchTerm(e.target.value)}
             className="w-full px-4 py-3 rounded-xl bg-white/10 border border-white/15 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-snooker-gold/80 focus:border-transparent"
           />
-        </div>
+        </section>
 
-        <div className="hidden md:block bg-white/5 backdrop-blur-sm rounded-2xl overflow-hidden border border-white/10 shadow-xl shadow-black/20">
+        <section className="mt-2" aria-labelledby="rankings-table-heading">
+          <h2
+            id="rankings-table-heading"
+            className="text-xl md:text-2xl font-semibold text-white mb-3 text-center md:text-left max-w-6xl mx-auto px-1"
+          >
+            Rankings table
+          </h2>
+
+          <div className="hidden md:block bg-white/5 backdrop-blur-sm rounded-2xl overflow-hidden border border-white/10 shadow-xl shadow-black/20">
           <div className="overflow-x-auto">
             <table className="w-full text-left">
               <thead className="bg-snooker-green/90 border-b border-snooker-gold/20">
@@ -159,9 +177,9 @@ export default function RankingsView() {
               </tbody>
             </table>
           </div>
-        </div>
+          </div>
 
-        <ul className="md:hidden space-y-3 pb-8">
+          <ul className="md:hidden space-y-3 pb-8">
           {filteredPlayers.map((player) => (
             <li
               key={`${player.rank}-${player.name}`}
@@ -186,11 +204,12 @@ export default function RankingsView() {
               </div>
             </li>
           ))}
-        </ul>
+          </ul>
 
-        {filteredPlayers.length === 0 ? (
+          {filteredPlayers.length === 0 ? (
           <p className="text-center text-gray-400 py-12">No players match &ldquo;{searchTerm}&rdquo;</p>
-        ) : null}
+          ) : null}
+        </section>
       </div>
 
       <footer className="border-t border-white/10 bg-black/20 py-8 mt-auto">

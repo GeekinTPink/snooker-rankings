@@ -3,7 +3,7 @@ import type { Metadata } from 'next'
 export const metadata: Metadata = {
   title: 'Sign in',
   description:
-    'Sign in with Google to unlock ranks 17–64 of the world snooker rankings and optional premium features.',
+    'Sign in with Google for snooker ranks 17–64 with countries and prize money—WST Gamechanger–style list. Visitors keep free top 16; premium options after login.',
   robots: {
     index: false,
     follow: true,
