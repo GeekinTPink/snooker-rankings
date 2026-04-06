@@ -18,6 +18,10 @@ const metadataBase = getMetadataBase()
 
 export const metadata: Metadata = {
   ...(metadataBase ? { metadataBase } : {}),
+  icons: {
+    icon: [{ url: '/icon', type: 'image/png', sizes: '32x32' }],
+    apple: [{ url: '/apple-icon', type: 'image/png', sizes: '180x180' }],
+  },
   title: {
     default: DEFAULT_TITLE,
     template: `%s | ${SITE_NAME}`,

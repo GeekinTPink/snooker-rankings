@@ -111,6 +111,17 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       if (pathname.startsWith("/api/auth")) {
         return true;
       }
+
+      // 浏览器标签图标、Apple 图标、OG 图、robots、sitemap（无扩展名路径，需显式放行）
+      if (
+        pathname === "/icon" ||
+        pathname === "/apple-icon" ||
+        pathname === "/opengraph-image" ||
+        pathname === "/robots.txt" ||
+        pathname === "/sitemap.xml"
+      ) {
+        return true
+      }
       
       // 登录页面：已登录用户重定向到首页
       if (pathname === "/login") {
