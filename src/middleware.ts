@@ -6,6 +6,7 @@ export default auth(() => {
 
 export const config = {
   matcher: [
-    "/((?!api/|_next/static|_next/image|favicon.ico|.*\\.(?:ico|png|jpg|jpeg|svg|gif|webp)$).*)",
+    // Skip auth for static SEO files so crawlers get no session cookies / RSC vary headers.
+    "/((?!api/|_next/static|_next/image|favicon\\.ico|robots\\.txt|sitemap\\.xml|.*\\.(?:ico|png|jpg|jpeg|svg|gif|webp)$).*)",
   ],
 }
