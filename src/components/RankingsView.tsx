@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
+import { usePathname } from 'next/navigation'
 import { useSession } from 'next-auth/react'
 import {
   players,
@@ -13,6 +14,7 @@ import SiteHeader from '@/components/SiteHeader'
 import type { Player } from '@/data/rankings'
 
 export default function RankingsView() {
+  const pathname = usePathname()
   const { data: session, status } = useSession()
   const [searchTerm, setSearchTerm] = useState('')
 
@@ -63,6 +65,17 @@ export default function RankingsView() {
       />
 
       <div className="container mx-auto px-4 py-6 max-w-6xl">
+        {pathname === '/' ? (
+          <p className="mb-6 text-center text-sm text-gray-400 max-w-2xl mx-auto">
+            <Link
+              href="/rankings"
+              className="font-medium text-snooker-gold/95 underline-offset-2 hover:text-snooker-gold hover:underline"
+            >
+              World snooker rankings — dedicated page
+            </Link>
+            <span className="text-gray-500"> (permalink for sharing and search).</span>
+          </p>
+        ) : null}
         <section className="mb-8 max-w-3xl mx-auto text-center" aria-labelledby="rankings-overview">
           <h2 id="rankings-overview" className="text-xl md:text-2xl font-semibold text-white mb-3">
             Official-style world rankings
