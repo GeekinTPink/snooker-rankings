@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import './globals.css'
+import GoogleAnalytics from '@/components/GoogleAnalytics'
 import Providers from '@/components/Providers'
 import {
   DEFAULT_DESCRIPTION,
@@ -87,6 +88,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
+        <GoogleAnalytics />
         <Providers>{children}</Providers>
       </body>
     </html>
